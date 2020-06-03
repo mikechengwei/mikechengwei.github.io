@@ -172,7 +172,7 @@
               <span class="post-meta-item-text">Posted on</span>
               
 
-              <time title="Created: 2020-06-04 00:18:33 / Modified: 00:33:40" itemprop="dateCreated datePublished" datetime="2020-06-04T00:18:33+08:00">2020-06-04</time>
+              <time title="Created: 2020-06-04 00:18:33 / Modified: 00:36:18" itemprop="dateCreated datePublished" datetime="2020-06-04T00:18:33+08:00">2020-06-04</time>
             </span>
 
           
@@ -231,79 +231,77 @@
 </li>
 <li><p>这里用-1代表数组元素为空，-2代表叶子节点, -3代表根节点</p>
 <ul>
-<li><p>初始状态</p>
+<li>初始状态</li>
+</ul>
 
 
 <blockquote>
 <p>对于索引0，check[0]=-3代表根节点, base[0]表示偏移基地址为1，其他元素为-1表示为空</p>
 </blockquote>
 </li>
-</ul>
-</li>
 <li><p>输入前缀ab</p>
 <ul>
-<li><p>输入a</p>
+<li>输入a</li>
+</ul>
 
 
 <blockquote>
 <p>base[0]+a，由状态0跳转到状态2. check[2]为-1，说明为空，更新为父状态0；base[2]更新为跳转过来的base, 即base[0]的值1</p>
 </blockquote>
-</li>
-<li><p>输入b</p>
+<ul>
+<li>输入b</li>
+</ul>
 
 
 <blockquote>
 <p>base[2]+b，由状态2跳转到状态3，check[3]为-1，说明为空，更新为父状态2；由于字符串结束，将base[3]更新为-2，代表叶节点。</p>
 </blockquote>
 </li>
-</ul>
-</li>
 <li><p>输入前缀ad</p>
 <ul>
-<li><p>输入a</p>
+<li>输入a</li>
+</ul>
 
 
 <blockquote>
 <p>图中base和check的状态不会变化。 根据base[0]+a，从状态0跳转到2。 check[2]不为空，但check[2]的值0与其父状态S=0相等，则无需更新，进入状态2，等待输入下一个字符。这个过程相当于一个查询过程</p>
 </blockquote>
-</li>
-<li><p>输入d</p>
+<ul>
+<li>输入d</li>
+</ul>
   
 
 <blockquote>
 <p>base[2]+d，由状态2跳转到状态5，check[5]为-1，说明为空，更新为父状态2；由于字符串结束，将base[5]更新为-2，代表叶节点。</p>
 </blockquote>
 </li>
-</ul>
-</li>
 <li><p>输入字符串ca,解决冲突问题</p>
 <ul>
-<li><p>输入c</p>
-    
+<li>输入c</li>
+</ul>
+  
 
 <blockquote>
 <p>状态由0跳转到状态4，check[4]空闲，将check[4]赋值为0，base[4]赋值为1.</p>
 </blockquote>
-</li>
-<li><p>输入a, 发生冲突</p>
+<ul>
+<li>输入a, 发生冲突</li>
+</ul>
   
 
 <blockquote>
 <p>根据base[4]+4 状态从4跳转到2， 但是check[2]非空，并且check[2]=0不等于父状态4，此时发生冲突</p>
 </blockquote>
 <ul>
-<li><p>解决冲突</p>
-<ul>
+<li>解决冲突<ul>
 <li>重新查找base 和 check数组新的空闲位置,我们找到base[6]和check[6]。我们将base[4]改为6-a=5。check[6]=4。如下图:</li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
  
 
-</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
 <h2 id="双数组前缀树优势和应用"><a href="#双数组前缀树优势和应用" class="headerlink" title="双数组前缀树优势和应用"></a>双数组前缀树优势和应用</h2><p>Trie 树的双数组实现基本可以达到单数组实现的性能，同时能够大幅降低空间开销；但是其难以做到词典的实时更新。</p>
 <p>BYVoid写的<a href="https://github.com/BYVoid/OpenCC" target="_blank" rel="noopener">opencc</a>,简繁翻译就是用的双数组前缀树。双数组前缀树在nlp中应用比较广泛。</p>
 <p><a href="https://github.com/tlwg/libdatrie" target="_blank" rel="noopener">libdatrie</a> 是C语言版本的双数组前缀树。</p>
