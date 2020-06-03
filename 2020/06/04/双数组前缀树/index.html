@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="双数组前缀树(Double array Trie)引言前缀树通常用在字符串查询和模糊匹配中,今天讨论前缀树的相关实现,着重了解双数组前缀树的优势。  什么是前缀树 三数组前缀树 双数组前缀树  什么是前缀树 Trie (Retrieval)Trie 是一种字符搜索树,是一种有效的索引方法,也是一种有穷自动机 DFA( deterministic finite automaton),DFA 就是一种">
+<meta property="og:type" content="article">
+<meta property="og:title" content="双数组前缀树">
+<meta property="og:url" content="http://yoursite.com/2020/06/04/%E5%8F%8C%E6%95%B0%E7%BB%84%E5%89%8D%E7%BC%80%E6%A0%91/index.html">
+<meta property="og:site_name" content="mikechengwei&#39;s Blog">
+<meta property="og:description" content="双数组前缀树(Double array Trie)引言前缀树通常用在字符串查询和模糊匹配中,今天讨论前缀树的相关实现,着重了解双数组前缀树的优势。  什么是前缀树 三数组前缀树 双数组前缀树  什么是前缀树 Trie (Retrieval)Trie 是一种字符搜索树,是一种有效的索引方法,也是一种有穷自动机 DFA( deterministic finite automaton),DFA 就是一种">
+<meta property="og:image" content="http://yoursite.com/2020/06/04/%E5%8F%8C%E6%95%B0%E7%BB%84%E5%89%8D%E7%BC%80%E6%A0%91/trie1.gif">
+<meta property="og:image" content="http://yoursite.com/2020/06/04/%E5%8F%8C%E6%95%B0%E7%BB%84%E5%89%8D%E7%BC%80%E6%A0%91/trie4.gif">
+<meta property="og:image" content="http://yoursite.com/2020/06/04/%E5%8F%8C%E6%95%B0%E7%BB%84%E5%89%8D%E7%BC%80%E6%A0%91/trie5.gif">
+<meta property="article:published_time" content="2020-06-03T16:18:33.000Z">
+<meta property="article:modified_time" content="2020-06-03T16:33:40.243Z">
+<meta property="article:author" content="mikechengwei">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://yoursite.com/2020/06/04/%E5%8F%8C%E6%95%B0%E7%BB%84%E5%89%8D%E7%BC%80%E6%A0%91/trie1.gif">
+
+<link rel="canonical" href="http://yoursite.com/2020/06/04/%E5%8F%8C%E6%95%B0%E7%BB%84%E5%89%8D%E7%BC%80%E6%A0%91/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-Hans'
+  };
+</script>
+
+  <title>双数组前缀树 | mikechengwei's Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">mikechengwei's Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">笨猪猪</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/06/04/%E5%8F%8C%E6%95%B0%E7%BB%84%E5%89%8D%E7%BC%80%E6%A0%91/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="mikechengwei">
+      <meta itemprop="description" content="I have a girl">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="mikechengwei's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          双数组前缀树
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2020-06-04 00:18:33 / Modified: 00:33:40" itemprop="dateCreated datePublished" datetime="2020-06-04T00:18:33+08:00">2020-06-04</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="双数组前缀树-Double-array-Trie"><a href="#双数组前缀树-Double-array-Trie" class="headerlink" title="双数组前缀树(Double array Trie)"></a>双数组前缀树(Double array Trie)</h1><h2 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h2><p>前缀树通常用在字符串查询和模糊匹配中,今天讨论前缀树的相关实现,着重了解双数组前缀树的优势。</p>
+<ul>
+<li>什么是前缀树</li>
+<li>三数组前缀树</li>
+<li>双数组前缀树</li>
+</ul>
+<h2 id="什么是前缀树-Trie-Retrieval"><a href="#什么是前缀树-Trie-Retrieval" class="headerlink" title="什么是前缀树 Trie (Retrieval)"></a>什么是前缀树 Trie (Retrieval)</h2><p>Trie 是一种字符搜索树,是一种有效的索引方法,也是一种有穷自动机 DFA( deterministic finite automaton),DFA 就是一种有终止状态的状态转移。</p>
+<p>如下图:</p>
+<img src="/2020/06/04/%E5%8F%8C%E6%95%B0%E7%BB%84%E5%89%8D%E7%BC%80%E6%A0%91/trie1.gif" class="trie1.gifThis is an">
+
+<p>查询一个字符串,按字符从根节点搜索,像状态转移一样。</p>
+<p>Trie 的算法复杂度依赖于搜索Key的大小,而不依赖于数据的大小,即算法复杂度是O(m),所以它一般比B Tree这种基于比较的索引方法快很多。</p>
+<h3 id="如何实现一个前缀树"><a href="#如何实现一个前缀树" class="headerlink" title="如何实现一个前缀树"></a>如何实现一个前缀树</h3><h4 id="二维数组存储"><a href="#二维数组存储" class="headerlink" title="二维数组存储"></a>二维数组存储</h4><p>比如存储单词,每一层用数组a[第i层][26个字符+1(终止符号)]来存储。</p>
+
+
+<p>因为数组长度不可变,每一层字符比较稀疏的话,就会造成空间的浪费。</p>
+<h4 id="链表存储"><a href="#链表存储" class="headerlink" title="链表存储"></a>链表存储</h4><p>使用链表来存储每一层,空间可控制,但是状态转移的时候,必须遍历链表,算法复杂度就变成了O(m*n)（n是每层节点中的数量）,降低了查询效率。</p>
+<p>如下图:</p>
+
+
+<h4 id="Hash-存储"><a href="#Hash-存储" class="headerlink" title="Hash 存储"></a>Hash 存储</h4><p>Hash 表每层搜索的算法复杂度在O(1)，算是一种比较好的实现。但是算hash值，解决hash冲突，实际搜索效率还是比不上二维数组。</p>
+<h2 id="三数组前缀树-tripple-array"><a href="#三数组前缀树-tripple-array" class="headerlink" title="三数组前缀树(tripple-array)"></a>三数组前缀树(tripple-array)</h2><p>使用 base next check 三个数组来存储.</p>
+<img src="/2020/06/04/%E5%8F%8C%E6%95%B0%E7%BB%84%E5%89%8D%E7%BC%80%E6%A0%91/trie4.gif" class="trie4.gifThis is an">
+
+<p>参照上面的图我们理解一下: s-&gt;t,输入c字符。</p>
+<ul>
+<li>base:base数组中每一个元素代表一个节点,base[s]的值是next和check数组的起始索引.</li>
+<li>next:存储base[s]节点,在输入某个状态c,得到的下一个状态。即 next[base[c]+c]=t</li>
+<li>check:存储转换过程中的的上一状态。check[base[s] + c] = s</li>
+</ul>
+<p>通过三个数组,next维护转换的结果,check维护转换的上一状态，构造一个前缀树。这个做法做到空间节省，但是还不够,我们看下面的双数组前缀树。</p>
+<h2 id="双数组前缀树-Double-Array-Trie）"><a href="#双数组前缀树-Double-Array-Trie）" class="headerlink" title="双数组前缀树(Double-Array Trie）"></a>双数组前缀树(Double-Array Trie）</h2><p>双数组前缀树是对三数组前缀树的压缩优化,将next数组和base数组合并,check数组保留。</p>
+<p>如下图:</p>
+<img src="/2020/06/04/%E5%8F%8C%E6%95%B0%E7%BB%84%E5%89%8D%E7%BC%80%E6%A0%91/trie5.gif" class="" title="This is an trie5.gif">
+
+<ul>
+<li>check[base[s] + c] = s</li>
+<li>base[s] + c = t</li>
+</ul>
+<p>用check保存状态转移过程中的上一个状态,base[s]保存上一状态的偏移量。</p>
+<h3 id="双数组前缀树构造例子"><a href="#双数组前缀树构造例子" class="headerlink" title="双数组前缀树构造例子"></a>双数组前缀树构造例子</h3><ul>
+<li><p>假定输入两个前缀为’ab’, ‘ad’，将字母a-z映射为数字1，2，3,…, 26.</p>
+</li>
+<li><p>这里用-1代表数组元素为空，-2代表叶子节点, -3代表根节点</p>
+<ul>
+<li><p>初始状态</p>
+
+
+<blockquote>
+<p>对于索引0，check[0]=-3代表根节点, base[0]表示偏移基地址为1，其他元素为-1表示为空</p>
+</blockquote>
+</li>
+</ul>
+</li>
+<li><p>输入前缀ab</p>
+<ul>
+<li><p>输入a</p>
+
+
+<blockquote>
+<p>base[0]+a，由状态0跳转到状态2. check[2]为-1，说明为空，更新为父状态0；base[2]更新为跳转过来的base, 即base[0]的值1</p>
+</blockquote>
+</li>
+<li><p>输入b</p>
+
+
+<blockquote>
+<p>base[2]+b，由状态2跳转到状态3，check[3]为-1，说明为空，更新为父状态2；由于字符串结束，将base[3]更新为-2，代表叶节点。</p>
+</blockquote>
+</li>
+</ul>
+</li>
+<li><p>输入前缀ad</p>
+<ul>
+<li><p>输入a</p>
+
+
+<blockquote>
+<p>图中base和check的状态不会变化。 根据base[0]+a，从状态0跳转到2。 check[2]不为空，但check[2]的值0与其父状态S=0相等，则无需更新，进入状态2，等待输入下一个字符。这个过程相当于一个查询过程</p>
+</blockquote>
+</li>
+<li><p>输入d</p>
+  
+
+<blockquote>
+<p>base[2]+d，由状态2跳转到状态5，check[5]为-1，说明为空，更新为父状态2；由于字符串结束，将base[5]更新为-2，代表叶节点。</p>
+</blockquote>
+</li>
+</ul>
+</li>
+<li><p>输入字符串ca,解决冲突问题</p>
+<ul>
+<li><p>输入c</p>
+    
+
+<blockquote>
+<p>状态由0跳转到状态4，check[4]空闲，将check[4]赋值为0，base[4]赋值为1.</p>
+</blockquote>
+</li>
+<li><p>输入a, 发生冲突</p>
+  
+
+<blockquote>
+<p>根据base[4]+4 状态从4跳转到2， 但是check[2]非空，并且check[2]=0不等于父状态4，此时发生冲突</p>
+</blockquote>
+<ul>
+<li><p>解决冲突</p>
+<ul>
+<li>重新查找base 和 check数组新的空闲位置,我们找到base[6]和check[6]。我们将base[4]改为6-a=5。check[6]=4。如下图:</li>
+</ul>
+ 
+
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="双数组前缀树优势和应用"><a href="#双数组前缀树优势和应用" class="headerlink" title="双数组前缀树优势和应用"></a>双数组前缀树优势和应用</h2><p>Trie 树的双数组实现基本可以达到单数组实现的性能，同时能够大幅降低空间开销；但是其难以做到词典的实时更新。</p>
+<p>BYVoid写的<a href="https://github.com/BYVoid/OpenCC" target="_blank" rel="noopener">opencc</a>,简繁翻译就是用的双数组前缀树。双数组前缀树在nlp中应用比较广泛。</p>
+<p><a href="https://github.com/tlwg/libdatrie" target="_blank" rel="noopener">libdatrie</a> 是C语言版本的双数组前缀树。</p>
+<p><a href="https://github.com/hankcs/HanLP" target="_blank" rel="noopener">hanlp</a> hanlp中实现了java版本的双数组前缀树。还基于双数组前缀树实现了 <a href="http://www.hankcs.com/program/algorithm/aho-corasick-double-array-trie.html" target="_blank" rel="noopener">Aho Corasick自动机</a> 版本。</p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li><a href="https://turbopeter.github.io/2013/09/02/prefix-match/" target="_blank" rel="noopener">https://turbopeter.github.io/2013/09/02/prefix-match/</a></li>
+<li><a href="https://linux.thai.net/~thep/datrie/#Ref_Fredkin1960" target="_blank" rel="noopener">https://linux.thai.net/~thep/datrie/#Ref_Fredkin1960</a></li>
+</ul>
+<p><a href="https:/mikechengwei.github.io/tags/数据结构/" target="_blank" rel="noopener">#数据结构</a> <a href="https:/mikechengwei.github.io/tags/nlp/" target="_blank" rel="noopener">#nlp</a> <a href="https:/mikechengwei.github.io/tags/Trie/" target="_blank" rel="noopener">#Trie</a></p>
+<p><a href="https:/mikechengwei.github.io/2019/03/08/Kafka-exactly-once-设计思想/" target="_blank" rel="noopener">Kafka-exactly-once-设计思想</a></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/06/03/cgroup%E5%8E%9F%E7%90%86/" rel="prev" title="Linux Control Groups V1 和 V2 原理和区别">
+      <i class="fa fa-chevron-left"></i> Linux Control Groups V1 和 V2 原理和区别
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#双数组前缀树-Double-array-Trie"><span class="nav-number">1.</span> <span class="nav-text">双数组前缀树(Double array Trie)</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#引言"><span class="nav-number">1.1.</span> <span class="nav-text">引言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#什么是前缀树-Trie-Retrieval"><span class="nav-number">1.2.</span> <span class="nav-text">什么是前缀树 Trie (Retrieval)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#如何实现一个前缀树"><span class="nav-number">1.2.1.</span> <span class="nav-text">如何实现一个前缀树</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#二维数组存储"><span class="nav-number">1.2.1.1.</span> <span class="nav-text">二维数组存储</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#链表存储"><span class="nav-number">1.2.1.2.</span> <span class="nav-text">链表存储</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Hash-存储"><span class="nav-number">1.2.1.3.</span> <span class="nav-text">Hash 存储</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#三数组前缀树-tripple-array"><span class="nav-number">1.3.</span> <span class="nav-text">三数组前缀树(tripple-array)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#双数组前缀树-Double-Array-Trie）"><span class="nav-number">1.4.</span> <span class="nav-text">双数组前缀树(Double-Array Trie）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#双数组前缀树构造例子"><span class="nav-number">1.4.1.</span> <span class="nav-text">双数组前缀树构造例子</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#双数组前缀树优势和应用"><span class="nav-number">1.5.</span> <span class="nav-text">双数组前缀树优势和应用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考"><span class="nav-number">1.6.</span> <span class="nav-text">参考</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">mikechengwei</p>
+  <div class="site-description" itemprop="description">I have a girl</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">3</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-name">categories</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">tags</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">mikechengwei</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
