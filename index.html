@@ -172,7 +172,7 @@
               <span class="post-meta-item-text">Posted on</span>
               
 
-              <time title="Created: 2020-06-04 00:18:33 / Modified: 00:36:18" itemprop="dateCreated datePublished" datetime="2020-06-04T00:18:33+08:00">2020-06-04</time>
+              <time title="Created: 2020-06-04 00:18:33 / Modified: 00:38:16" itemprop="dateCreated datePublished" datetime="2020-06-04T00:18:33+08:00">2020-06-04</time>
             </span>
 
           
@@ -226,37 +226,35 @@
 <li>base[s] + c = t</li>
 </ul>
 <p>用check保存状态转移过程中的上一个状态,base[s]保存上一状态的偏移量。</p>
-<h3 id="双数组前缀树构造例子"><a href="#双数组前缀树构造例子" class="headerlink" title="双数组前缀树构造例子"></a>双数组前缀树构造例子</h3><ul>
+<h3 id="双数组前缀树构造例子"><a href="#双数组前缀树构造例子" class="headerlink" title="双数组前缀树构造例子"></a>双数组前缀树构造例子</h3>
+<ul>
 <li><p>假定输入两个前缀为’ab’, ‘ad’，将字母a-z映射为数字1，2，3,…, 26.</p>
 </li>
 <li><p>这里用-1代表数组元素为空，-2代表叶子节点, -3代表根节点</p>
 <ul>
 <li>初始状态</li>
 </ul>
-
-
-<blockquote>
-<p>对于索引0，check[0]=-3代表根节点, base[0]表示偏移基地址为1，其他元素为-1表示为空</p>
-</blockquote>
 </li>
+</ul>
+<pre><code>&gt; 对于索引0，check[0]=-3代表根节点, base[0]表示偏移基地址为1，其他元素为-1表示为空</code></pre><ul>
 <li><p>输入前缀ab</p>
 <ul>
 <li>输入a</li>
 </ul>
-
-
-<blockquote>
-<p>base[0]+a，由状态0跳转到状态2. check[2]为-1，说明为空，更新为父状态0；base[2]更新为跳转过来的base, 即base[0]的值1</p>
-</blockquote>
-<ul>
-<li>输入b</li>
+</li>
 </ul>
+{% asset_img trie7.gif This is an trie7.gif %}
+
+<pre><code>&gt; base[0]+a，由状态0跳转到状态2. check[2]为-1，说明为空，更新为父状态0；base[2]更新为跳转过来的base, 即base[0]的值1</code></pre><ul>
+<li><p>输入b</p>
 
 
 <blockquote>
 <p>base[2]+b，由状态2跳转到状态3，check[3]为-1，说明为空，更新为父状态2；由于字符串结束，将base[3]更新为-2，代表叶节点。</p>
 </blockquote>
 </li>
+</ul>
+<ul>
 <li><p>输入前缀ad</p>
 <ul>
 <li>输入a</li>
