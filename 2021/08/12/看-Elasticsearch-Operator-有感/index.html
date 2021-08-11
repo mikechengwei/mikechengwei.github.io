@@ -27,9 +27,11 @@
 <meta property="og:site_name" content="mikechengwei&#39;s Blog">
 <meta property="og:description" content="引言最近仔细看了下 Elasticsearch Operator，感觉它的设计有点别出心裁，在集群更新方面，比我所知道的 TiDB Operator 和 Prometheus Operator 做的更好。所以在这里做一个 Elasticsearch Operator 和 TiDB Operator 的对比。 ES Operator 滚动更新ES 作为搜索存储组件，也是一种有状态应用。ES Oper">
 <meta property="og:image" content="http://yoursite.com/2021/08/12/%E7%9C%8B-Elasticsearch-Operator-%E6%9C%89%E6%84%9F/operator_update.png">
+<meta property="og:image" content="http://yoursite.com/2021/08/12/%E7%9C%8B-Elasticsearch-Operator-%E6%9C%89%E6%84%9F/es_operator_detail.png">
+<meta property="og:image" content="http://yoursite.com/2021/08/12/%E7%9C%8B-Elasticsearch-Operator-%E6%9C%89%E6%84%9F/tikv_code.png">
 <meta property="og:image" content="http://yoursite.com/2021/08/12/%E7%9C%8B-Elasticsearch-Operator-%E6%9C%89%E6%84%9F/tikv.png">
 <meta property="article:published_time" content="2021-08-11T17:18:31.000Z">
-<meta property="article:modified_time" content="2021-08-11T17:45:59.939Z">
+<meta property="article:modified_time" content="2021-08-11T17:50:11.478Z">
 <meta property="article:author" content="mikechengwei">
 <meta property="article:tag" content="elasticsearch">
 <meta property="article:tag" content="es">
@@ -181,7 +183,7 @@
               <span class="post-meta-item-text">Posted on</span>
               
 
-              <time title="Created: 2021-08-12 01:18:31 / Modified: 01:45:59" itemprop="dateCreated datePublished" datetime="2021-08-12T01:18:31+08:00">2021-08-12</time>
+              <time title="Created: 2021-08-12 01:18:31 / Modified: 01:50:11" itemprop="dateCreated datePublished" datetime="2021-08-12T01:18:31+08:00">2021-08-12</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -221,11 +223,11 @@
 </ol>
 <p>ES Operator 在更新 <code>Pod</code> 之前，会经过一系列的验证才会去操作集群，我觉得更加稳定。举个例子，[0,1,2] 三个 data 节点，如果 0 节点损坏宕机了，这个时候Operator 更新集群，如果按照Statefulset 的倒序策略，需要先重启 2 号节点，这个时候会让集群陷入更糟糕的场景。我们应该先重启 0 号节点，让它先恢复。所以 ES Operator 虽然脱离于<code>Statefulset</code> 重新写了一套更新策略，但是这套机制更灵活，让应用更稳定。</p>
 <p>我画了一张更详细的流程图，描述 ES Operator 的滚动更新逻辑。</p>
-
+<img src="/2021/08/12/%E7%9C%8B-Elasticsearch-Operator-%E6%9C%89%E6%84%9F/es_operator_detail.png" class="" title="This is an es_operator_detail.png">
 
 <h2 id="TiDB-Operator-滚动更新"><a href="#TiDB-Operator-滚动更新" class="headerlink" title="TiDB Operator 滚动更新"></a>TiDB Operator 滚动更新</h2><p>TiDB Operator 采用 Statefulset Partition 的方式滚动更新，这种方式可以控制节点依次更新，但是必须按照倒序的方式，在极端情况下，由于中间节点的损坏，倒序更新的方式会让集群陷入更加糟糕的地步。TiDB Operator  更新集群的时候，没有考虑到集群层面的可用性，只是对当前更新节点进行驱逐 region。这一点我们可以从TiDB Operator 更新 TiKV 的一段核心代码看出来。</p>
 <p>代码如下:</p>
-
+<img src="/2021/08/12/%E7%9C%8B-Elasticsearch-Operator-%E6%9C%89%E6%84%9F/tikv_code.png" class="" title="This is an tikv_code.png">
 
 <p>画个图描述下依次更新的过程：</p>
 <img src="/2021/08/12/%E7%9C%8B-Elasticsearch-Operator-%E6%9C%89%E6%84%9F/tikv.png" class="" title="This is an tikv.png">
