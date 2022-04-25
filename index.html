@@ -179,7 +179,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-04-25 23:58:32" itemprop="dateModified" datetime="2022-04-25T23:58:32+08:00">2022-04-25</time>
+                <time title="Modified: 2022-04-26 00:19:53" itemprop="dateModified" datetime="2022-04-26T00:19:53+08:00">2022-04-26</time>
               </span>
 
           
@@ -193,8 +193,11 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h1 id="LevelDB-RocksDB-Boltdb-Comparion"><a href="#LevelDB-RocksDB-Boltdb-Comparion" class="headerlink" title="LevelDB RocksDB Boltdb Comparion"></a>LevelDB RocksDB Boltdb Comparion</h1><h2 id="LevelDB"><a href="#LevelDB" class="headerlink" title="LevelDB"></a>LevelDB</h2><p>LevelDB 是 Google 的 Jeff Dean和Sanjay Ghemawat 设计开发的KV存储类型的依赖包，其本质是一个有序的数据Map。<br>LevelDB 底层采用 LSM-Tree 数据结构。</p>
-
+          <h1 id="LevelDB-RocksDB-Boltdb-Comparion"><a href="#LevelDB-RocksDB-Boltdb-Comparion" class="headerlink" title="LevelDB RocksDB Boltdb Comparion"></a>LevelDB RocksDB Boltdb Comparion</h1><h2 id="LevelDB"><a href="#LevelDB" class="headerlink" title="LevelDB"></a>LevelDB</h2><p>LevelDB 是 Google 的 Jeff Dean和Sanjay Ghemawat 设计开发的KV存储类型的依赖包，其本质是一个有序的数据Map。<br>LevelDB 底层采用 LSM-Tree 数据结构，设计实现类似于单个节点的<a href="https://research.google/pubs/pub27898/" target="_blank" rel="noopener">Bigtable tablet </a>，两者底层存储的文件数据不一样。</p>
+<p>LevelDB 的每个 database 由某个目录下的一堆有序文件组成。其中包含的文件类型有:</p>
+<h3 id="log-file"><a href="#log-file" class="headerlink" title="log file"></a>log file</h3><p>用于存储一系列更新的操作。每个操作都会append到当前log 文件，当log文件达到预定大小（默认约为4MB）时，log文件会转换成一个sorted table，并创建出一个新的log文件用于存储新的updates操作。</p>
+<p>当前正在写入log file的数据会有一份副本保存在内存结构（memtable）中。每次读取数据都会查阅内存中的副本数据。</p>
+<h3 id="Sorted-tables"><a href="#Sorted-tables" class="headerlink" title="Sorted tables"></a>Sorted tables</h3>
       
     </div>
 
