@@ -27,7 +27,7 @@
 <meta property="og:site_name" content="mikechengwei&#39;s Blog">
 <meta property="og:description" content="LevelDB RocksDB Boltdb ComparionLevelDBLevelDB 是 Google 的 Jeff Dean和Sanjay Ghemawat 设计开发的KV存储类型的依赖包，其本质是一个有序的数据Map。LevelDB 底层采用 LSM-Tree 数据结构，设计实现类似于单个节点的Bigtable tablet ，两者底层存储的文件数据不一样。 LevelDB 的每个 d">
 <meta property="article:published_time" content="2022-04-19T15:47:09.958Z">
-<meta property="article:modified_time" content="2022-04-25T16:19:53.181Z">
+<meta property="article:modified_time" content="2022-04-28T15:40:15.679Z">
 <meta property="article:author" content="mikechengwei">
 <meta name="twitter:card" content="summary">
 
@@ -181,7 +181,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-04-26 00:19:53" itemprop="dateModified" datetime="2022-04-26T00:19:53+08:00">2022-04-26</time>
+                <time title="Modified: 2022-04-28 23:40:15" itemprop="dateModified" datetime="2022-04-28T23:40:15+08:00">2022-04-28</time>
               </span>
 
           
@@ -199,7 +199,10 @@
 <p>LevelDB 的每个 database 由某个目录下的一堆有序文件组成。其中包含的文件类型有:</p>
 <h3 id="log-file"><a href="#log-file" class="headerlink" title="log file"></a>log file</h3><p>用于存储一系列更新的操作。每个操作都会append到当前log 文件，当log文件达到预定大小（默认约为4MB）时，log文件会转换成一个sorted table，并创建出一个新的log文件用于存储新的updates操作。</p>
 <p>当前正在写入log file的数据会有一份副本保存在内存结构（memtable）中。每次读取数据都会查阅内存中的副本数据。</p>
-<h3 id="Sorted-tables"><a href="#Sorted-tables" class="headerlink" title="Sorted tables"></a>Sorted tables</h3>
+<h3 id="Sorted-tables"><a href="#Sorted-tables" class="headerlink" title="Sorted tables"></a>Sorted tables</h3><p>一个sorted table (*.ldb) 存储了一系列基于key排序的数据，每条数据要么是key的value，要么是删除标记。（删除标记是为了隐藏sorted table中已经被删除的数据）。</p>
+<p>一系列sorted table 用level级别管理起来，默认生成的sorted table的level是0级别，当level-0级别的文件数量超过了阈值（当前是4），会将4个level-0的文件与已有的level-1文件进行合并。（level-1级别每mb生成一个文件。）</p>
+<p>Files in the young level may contain overlapping keys. However files in other levels have distinct non-overlapping key ranges. Consider level number L where L &gt;= 1. When the combined size of files in level-L exceeds (10^L) MB (i.e., 10MB for level-1, 100MB for level-2, …), one file in level-L, and all of the overlapping files in level-(L+1) are merged to form a set of new files for level-(L+1). These merges have the effect of gradually migrating new updates from the young level to the largest level using only bulk reads and writes (i.e., minimizing expensive seeks).</p>
+
     </div>
 
     
