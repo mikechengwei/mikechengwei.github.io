@@ -179,7 +179,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-05-01 00:00:21" itemprop="dateModified" datetime="2022-05-01T00:00:21+08:00">2022-05-01</time>
+                <time title="Modified: 2022-05-01 23:56:26" itemprop="dateModified" datetime="2022-05-01T23:56:26+08:00">2022-05-01</time>
               </span>
 
           
@@ -199,9 +199,9 @@
 <p>当前正在写入log file的数据会有一份副本保存在内存结构（memtable）中。每次读取数据都会查阅内存中的副本数据。</p>
 <h3 id="Sorted-tables"><a href="#Sorted-tables" class="headerlink" title="Sorted tables"></a>Sorted tables</h3><p>一个sorted table (*.ldb) 存储了一系列基于key排序的数据，每条数据要么是key的value，要么是删除标记。（删除标记是为了隐藏sorted table中已经被删除的数据）。</p>
 <p>一系列sorted table 用level级别管理起来，默认生成的sorted table的level是0级别，当level-0级别的文件数量超过了阈值（当前是4），会将4个level-0的文件与已有的level-1文件进行合并。（level-1级别每mb生成一个文件。）</p>
-<p>在初级的文件可能包含重复的keys。</p>
-<p>Files in the young level may contain overlapping keys. However files in other levels have distinct non-overlapping key ranges. Consider level number L where L &gt;= 1. When the combined size of files in level-L exceeds (10^L) MB (i.e., 10MB for level-1, 100MB for level-2, …), one file in level-L, and all of the overlapping files in level-(L+1) are merged to form a set of new files for level-(L+1). These merges have the effect of gradually migrating new updates from the young level to the largest level using only bulk reads and writes (i.e., minimizing expensive seeks).</p>
-
+<p>在初级的文件可能包含重复的keys，但是在其他层级这些keys会去重。当Level-L级别的文件存储超过(10^L) MB ，就会将其和Level-(L+1)的文件合并成新的文件。这些合并通过逐步迁移update操作丛低级别到高级别，采用批量读写的方式，保证迁移带来的搜索效率降低。</p>
+<h2 id="Manifest文件"><a href="#Manifest文件" class="headerlink" title="Manifest文件"></a>Manifest文件</h2><p>MANIFEST 文件列出了组成每个level的sorted tables，以及sorted table的键值范围和其他重要元数据。每当database打开的时候，一个Manifest文件（伴随着一个number）都会创建。MANIFEST 文件会用来做日志记录，当产生文件的添加和删除都会追加到MANIFEST 文件中。</p>
+<h2 id="Current"><a href="#Current" class="headerlink" title="Current"></a>Current</h2><h2 id="Info-logs"><a href="#Info-logs" class="headerlink" title="Info logs"></a>Info logs</h2><h2 id="Others"><a href="#Others" class="headerlink" title="Others"></a>Others</h2><h2 id="Level-0"><a href="#Level-0" class="headerlink" title="Level 0"></a>Level 0</h2><h2 id="Compactions"><a href="#Compactions" class="headerlink" title="Compactions"></a>Compactions</h2>
       
     </div>
 
