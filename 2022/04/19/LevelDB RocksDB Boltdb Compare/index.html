@@ -27,7 +27,7 @@
 <meta property="og:site_name" content="mikechengwei&#39;s Blog">
 <meta property="og:description" content="LevelDB RocksDB Boltdb ComparionLevelDBLevelDB 是 Google 的 Jeff Dean和Sanjay Ghemawat 设计开发的KV存储类型的依赖包，其本质是一个有序的数据Map。LevelDB 底层采用 LSM-Tree 数据结构，设计实现类似于单个节点的Bigtable tablet ，两者底层存储的文件数据不一样。 LevelDB 的每个 d">
 <meta property="article:published_time" content="2022-04-19T15:47:09.958Z">
-<meta property="article:modified_time" content="2022-05-02T15:55:09.586Z">
+<meta property="article:modified_time" content="2022-05-02T17:07:01.367Z">
 <meta property="article:author" content="mikechengwei">
 <meta name="twitter:card" content="summary">
 
@@ -181,7 +181,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-05-02 23:55:09" itemprop="dateModified" datetime="2022-05-02T23:55:09+08:00">2022-05-02</time>
+                <time title="Modified: 2022-05-03 01:07:01" itemprop="dateModified" datetime="2022-05-03T01:07:01+08:00">2022-05-03</time>
               </span>
 
           
@@ -211,8 +211,56 @@
 <li>将当前memtable写入到一个sstable中。</li>
 <li>放弃当前memtable。</li>
 <li>删除老的log file 和老的memtable。</li>
-<li>添加一个新的sstable加入到level-0层级中。<h2 id="Compactions"><a href="#Compactions" class="headerlink" title="Compactions"></a>Compactions</h2></li>
+<li>添加一个新的sstable加入到level-0层级中。</li>
 </ol>
+<h2 id="Compactions"><a href="#Compactions" class="headerlink" title="Compactions"></a>Compactions</h2><p>当Level-L的大小超过它的limit，会使用一个后台线程进行压缩。从Level L级别中抽取一个文件，将其和所有Level+1有重叠的文件进行合并。由于Level-L是Level L+1 级别的一部分，当压缩完成后，原有用于合并的Level- L+1的文件会丢弃。对于Level-1和Level-0级别的文件比较特殊，可能会选取多个Level-0级别的文件与Level-1进行合并，因为Level-0级别的文件会有一些重叠。</p>
+<p>压缩产生一系列level-(L+1)级别的文件，如果当前输出文件达到(2MB)大小，就会切换输出一个新的level-(L+1)文件。当当前输出的文件键值对范围与下一级别的文件重叠超过了10个文件，也会切换到一个新的文件进行输出，这条规则保证了压缩不会从下一级别抽取太多的数据。</p>
+<p>旧的文件文件被丢弃，新文件会标记为处于服务状态。</p>
+<p>对于每个Level L级别的文件，我们会记住最后一次压缩的末尾key。下一次压缩会从这个key之后的第一个文件进行合并。（如果没有这个文件，就会将这个key所在文件进行压缩）</p>
+<p>压缩会丢弃覆盖的值。如果没有更高Level的文件键值对包含了当前key，就会舍弃已经标记为删除的数据。</p>
+<h2 id="Timing"><a href="#Timing" class="headerlink" title="Timing"></a>Timing</h2><p>Level-0 级别的压缩，读取四个1MB Level-0文件，最多读取10MB的Level-1文件。我们会读取14MB并写入14MB。</p>
+<p>除了Level-0级别的压缩比较特殊，比如我们从 Level-0 读取一个2MB的文件，最坏的情况下，这将与Level L+1 重叠12个文件（其中10个文件是因为Level L+1 是 Level  L 的10倍文件范围，另外两个文件处于边界范围，因为Level L与Level L+1的文件范围对齐）。因此，压缩将读取 26MB 并写入 26MB。假设磁盘 IO 速率为 100MB/s（现代驱动器的大致范围），最差的压缩成本将约为 0.5 秒</p>
+<p>如果我们将后台写入限制为较小的值，例如 100MB/s 速度的 10%，则压缩可能需要 5 秒。如果用户以 10MB/s 的速度写入，我们可能会构建大量的 0 级文件（约 50 个来容纳 5*10MB）。由于在每次读取时将更多文件合并在一起的开销，这可能会显着增加读取成本。</p>
+<p>解决读取成本过高的问题有三种方案：</p>
+<p>方案一: 增加log file 阈值大小，这种方式会需要更多的内存保存对应的memtable。</p>
+<p>方案二: 降低写入速率。</p>
+<p>方案三: 在内存memtable中提前合并，提高效率。</p>
+<h2 id="Number-of-files"><a href="#Number-of-files" class="headerlink" title="Number of files"></a>Number of files</h2><p>与其总是产生2MB的文件，我们可以增加文件大小，减少产生的文件数目。<br>可能会带来更多的突发性的压缩，我们可以将文件存储到多个目录中。</p>
+<p>有一项关于在目录中打开文件数的消耗时间对比:</p>
+<table>
+<thead>
+<tr>
+<th>目录文件数</th>
+<th>打开一个文件的时间</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1000</td>
+<td>9</td>
+</tr>
+<tr>
+<td>10000</td>
+<td>10</td>
+</tr>
+<tr>
+<td>100000</td>
+<td>16</td>
+</tr>
+<tr>
+<td>10w文件数打开时间是16ms，所以不分目录效率也还好。</td>
+<td></td>
+</tr>
+</tbody></table>
+<h2 id="Recovery"><a href="#Recovery" class="headerlink" title="Recovery"></a>Recovery</h2><p>恢复流程如下:</p>
+<ul>
+<li>读取 CURRENT 文件找到最新提交的 MANIFEST 文件</li>
+<li>读取 MANIFEST 文件</li>
+<li>清理旧文件</li>
+<li>我们可以打开所有的sstables，但最好是懒加载。</li>
+<li>将log chunk 转换成一个新的level-0 sstable。</li>
+<li>开始将新的写入到一个新的拥有恢复序列的日志文件。</li>
+</ul>
+<h2 id="Garbage-collection-of-files"><a href="#Garbage-collection-of-files" class="headerlink" title="Garbage collection of files"></a>Garbage collection of files</h2><p>在每次压缩结束和恢复结束的时候都会调用 RemoveObsoleteFiles 方法。它会查找数据库所有文件，它会删除所有不是当前当前日志文件的日志文件。它会删除所有未从某个Level引用且不是当前正在压缩的输出的table文件。</p>
 
     </div>
 
@@ -290,7 +338,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#LevelDB-RocksDB-Boltdb-Comparion"><span class="nav-number">1.</span> <span class="nav-text">LevelDB RocksDB Boltdb Comparion</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#LevelDB"><span class="nav-number">1.1.</span> <span class="nav-text">LevelDB</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#log-file"><span class="nav-number">1.1.1.</span> <span class="nav-text">log file</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Sorted-tables"><span class="nav-number">1.1.2.</span> <span class="nav-text">Sorted tables</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Manifest文件"><span class="nav-number">1.2.</span> <span class="nav-text">Manifest文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Current"><span class="nav-number">1.3.</span> <span class="nav-text">Current</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Info-logs"><span class="nav-number">1.4.</span> <span class="nav-text">Info logs</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Others"><span class="nav-number">1.5.</span> <span class="nav-text">Others</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Level-0"><span class="nav-number">1.6.</span> <span class="nav-text">Level 0</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Compactions"><span class="nav-number">1.7.</span> <span class="nav-text">Compactions</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#LevelDB-RocksDB-Boltdb-Comparion"><span class="nav-number">1.</span> <span class="nav-text">LevelDB RocksDB Boltdb Comparion</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#LevelDB"><span class="nav-number">1.1.</span> <span class="nav-text">LevelDB</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#log-file"><span class="nav-number">1.1.1.</span> <span class="nav-text">log file</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Sorted-tables"><span class="nav-number">1.1.2.</span> <span class="nav-text">Sorted tables</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Manifest文件"><span class="nav-number">1.2.</span> <span class="nav-text">Manifest文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Current"><span class="nav-number">1.3.</span> <span class="nav-text">Current</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Info-logs"><span class="nav-number">1.4.</span> <span class="nav-text">Info logs</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Others"><span class="nav-number">1.5.</span> <span class="nav-text">Others</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Level-0"><span class="nav-number">1.6.</span> <span class="nav-text">Level 0</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Compactions"><span class="nav-number">1.7.</span> <span class="nav-text">Compactions</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Timing"><span class="nav-number">1.8.</span> <span class="nav-text">Timing</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Number-of-files"><span class="nav-number">1.9.</span> <span class="nav-text">Number of files</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Recovery"><span class="nav-number">1.10.</span> <span class="nav-text">Recovery</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Garbage-collection-of-files"><span class="nav-number">1.11.</span> <span class="nav-text">Garbage collection of files</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
