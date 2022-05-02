@@ -179,7 +179,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-05-01 23:56:26" itemprop="dateModified" datetime="2022-05-01T23:56:26+08:00">2022-05-01</time>
+                <time title="Modified: 2022-05-02 23:55:09" itemprop="dateModified" datetime="2022-05-02T23:55:09+08:00">2022-05-02</time>
               </span>
 
           
@@ -201,7 +201,17 @@
 <p>一系列sorted table 用level级别管理起来，默认生成的sorted table的level是0级别，当level-0级别的文件数量超过了阈值（当前是4），会将4个level-0的文件与已有的level-1文件进行合并。（level-1级别每mb生成一个文件。）</p>
 <p>在初级的文件可能包含重复的keys，但是在其他层级这些keys会去重。当Level-L级别的文件存储超过(10^L) MB ，就会将其和Level-(L+1)的文件合并成新的文件。这些合并通过逐步迁移update操作丛低级别到高级别，采用批量读写的方式，保证迁移带来的搜索效率降低。</p>
 <h2 id="Manifest文件"><a href="#Manifest文件" class="headerlink" title="Manifest文件"></a>Manifest文件</h2><p>MANIFEST 文件列出了组成每个level的sorted tables，以及sorted table的键值范围和其他重要元数据。每当database打开的时候，一个Manifest文件（伴随着一个number）都会创建。MANIFEST 文件会用来做日志记录，当产生文件的添加和删除都会追加到MANIFEST 文件中。</p>
-<h2 id="Current"><a href="#Current" class="headerlink" title="Current"></a>Current</h2><h2 id="Info-logs"><a href="#Info-logs" class="headerlink" title="Info logs"></a>Info logs</h2><h2 id="Others"><a href="#Others" class="headerlink" title="Others"></a>Others</h2><h2 id="Level-0"><a href="#Level-0" class="headerlink" title="Level 0"></a>Level 0</h2><h2 id="Compactions"><a href="#Compactions" class="headerlink" title="Compactions"></a>Compactions</h2>
+<h2 id="Current"><a href="#Current" class="headerlink" title="Current"></a>Current</h2><p><code>CURRENT</code> 是一个text文件，用于描述当前最新Manifest文件的名字。</p>
+<h2 id="Info-logs"><a href="#Info-logs" class="headerlink" title="Info logs"></a>Info logs</h2><p>日志信息会打印到 LOG and LOG.old 文件中。</p>
+<h2 id="Others"><a href="#Others" class="headerlink" title="Others"></a>Others</h2><p>还有一些其他用处的文件，比如 LOCK, *.dbtmp。</p>
+<h2 id="Level-0"><a href="#Level-0" class="headerlink" title="Level 0"></a>Level 0</h2><p>当 log file 增长到一个确定的大小（默认是4MB）: 创建一个新的memtable和log file，用于处理新的请求。后台的步骤如下:</p>
+<ol>
+<li>将当前memtable写入到一个sstable中。</li>
+<li>放弃当前memtable。</li>
+<li>删除老的log file 和老的memtable。</li>
+<li>添加一个新的sstable加入到level-0层级中。<h2 id="Compactions"><a href="#Compactions" class="headerlink" title="Compactions"></a>Compactions</h2></li>
+</ol>
+
       
     </div>
 
