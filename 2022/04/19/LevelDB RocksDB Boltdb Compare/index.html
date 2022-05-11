@@ -27,7 +27,7 @@
 <meta property="og:site_name" content="mikechengwei&#39;s Blog">
 <meta property="og:description" content="LevelDB RocksDB Boltdb ComparionLevelDBLevelDB 是 Google 的 Jeff Dean和Sanjay Ghemawat 设计开发的KV存储类型的依赖包，其本质是一个有序的数据Map。LevelDB 底层采用 LSM-Tree 数据结构，设计实现类似于单个节点的Bigtable tablet ，两者底层存储的文件数据不一样。 LevelDB 的每个 d">
 <meta property="article:published_time" content="2022-04-19T15:47:09.958Z">
-<meta property="article:modified_time" content="2022-05-02T17:07:01.367Z">
+<meta property="article:modified_time" content="2022-05-11T15:57:02.017Z">
 <meta property="article:author" content="mikechengwei">
 <meta name="twitter:card" content="summary">
 
@@ -181,7 +181,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-05-03 01:07:01" itemprop="dateModified" datetime="2022-05-03T01:07:01+08:00">2022-05-03</time>
+                <time title="Modified: 2022-05-11 23:57:02" itemprop="dateModified" datetime="2022-05-11T23:57:02+08:00">2022-05-11</time>
               </span>
 
           
@@ -261,6 +261,7 @@
 <li>开始将新的写入到一个新的拥有恢复序列的日志文件。</li>
 </ul>
 <h2 id="Garbage-collection-of-files"><a href="#Garbage-collection-of-files" class="headerlink" title="Garbage collection of files"></a>Garbage collection of files</h2><p>在每次压缩结束和恢复结束的时候都会调用 RemoveObsoleteFiles 方法。它会查找数据库所有文件，它会删除所有不是当前当前日志文件的日志文件。它会删除所有未从某个Level引用且不是当前正在压缩的输出的table文件。</p>
+<h1 id="RocksDB"><a href="#RocksDB" class="headerlink" title="RocksDB"></a>RocksDB</h1><p>rocksdb 是fackebook数据库团队提供。</p>
 
     </div>
 
@@ -338,7 +339,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#LevelDB-RocksDB-Boltdb-Comparion"><span class="nav-number">1.</span> <span class="nav-text">LevelDB RocksDB Boltdb Comparion</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#LevelDB"><span class="nav-number">1.1.</span> <span class="nav-text">LevelDB</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#log-file"><span class="nav-number">1.1.1.</span> <span class="nav-text">log file</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Sorted-tables"><span class="nav-number">1.1.2.</span> <span class="nav-text">Sorted tables</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Manifest文件"><span class="nav-number">1.2.</span> <span class="nav-text">Manifest文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Current"><span class="nav-number">1.3.</span> <span class="nav-text">Current</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Info-logs"><span class="nav-number">1.4.</span> <span class="nav-text">Info logs</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Others"><span class="nav-number">1.5.</span> <span class="nav-text">Others</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Level-0"><span class="nav-number">1.6.</span> <span class="nav-text">Level 0</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Compactions"><span class="nav-number">1.7.</span> <span class="nav-text">Compactions</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Timing"><span class="nav-number">1.8.</span> <span class="nav-text">Timing</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Number-of-files"><span class="nav-number">1.9.</span> <span class="nav-text">Number of files</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Recovery"><span class="nav-number">1.10.</span> <span class="nav-text">Recovery</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Garbage-collection-of-files"><span class="nav-number">1.11.</span> <span class="nav-text">Garbage collection of files</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#LevelDB-RocksDB-Boltdb-Comparion"><span class="nav-number">1.</span> <span class="nav-text">LevelDB RocksDB Boltdb Comparion</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#LevelDB"><span class="nav-number">1.1.</span> <span class="nav-text">LevelDB</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#log-file"><span class="nav-number">1.1.1.</span> <span class="nav-text">log file</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Sorted-tables"><span class="nav-number">1.1.2.</span> <span class="nav-text">Sorted tables</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Manifest文件"><span class="nav-number">1.2.</span> <span class="nav-text">Manifest文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Current"><span class="nav-number">1.3.</span> <span class="nav-text">Current</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Info-logs"><span class="nav-number">1.4.</span> <span class="nav-text">Info logs</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Others"><span class="nav-number">1.5.</span> <span class="nav-text">Others</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Level-0"><span class="nav-number">1.6.</span> <span class="nav-text">Level 0</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Compactions"><span class="nav-number">1.7.</span> <span class="nav-text">Compactions</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Timing"><span class="nav-number">1.8.</span> <span class="nav-text">Timing</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Number-of-files"><span class="nav-number">1.9.</span> <span class="nav-text">Number of files</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Recovery"><span class="nav-number">1.10.</span> <span class="nav-text">Recovery</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Garbage-collection-of-files"><span class="nav-number">1.11.</span> <span class="nav-text">Garbage collection of files</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#RocksDB"><span class="nav-number">2.</span> <span class="nav-text">RocksDB</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
