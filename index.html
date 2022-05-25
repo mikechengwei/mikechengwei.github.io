@@ -179,7 +179,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-05-11 23:57:02" itemprop="dateModified" datetime="2022-05-11T23:57:02+08:00">2022-05-11</time>
+                <time title="Modified: 2022-05-25 23:43:02" itemprop="dateModified" datetime="2022-05-25T23:43:02+08:00">2022-05-25</time>
               </span>
 
           
@@ -259,7 +259,7 @@
 <li>开始将新的写入到一个新的拥有恢复序列的日志文件。</li>
 </ul>
 <h2 id="Garbage-collection-of-files"><a href="#Garbage-collection-of-files" class="headerlink" title="Garbage collection of files"></a>Garbage collection of files</h2><p>在每次压缩结束和恢复结束的时候都会调用 RemoveObsoleteFiles 方法。它会查找数据库所有文件，它会删除所有不是当前当前日志文件的日志文件。它会删除所有未从某个Level引用且不是当前正在压缩的输出的table文件。</p>
-<h1 id="RocksDB"><a href="#RocksDB" class="headerlink" title="RocksDB"></a>RocksDB</h1><p>rocksdb 是fackebook数据库团队提供。</p>
+<h1 id="RocksDB"><a href="#RocksDB" class="headerlink" title="RocksDB"></a>RocksDB</h1><p>rocksdb 是fackebook数据库团队提供。<br>采用 Log-Structured-Merge-Database (LSM) 数据结构，可在读放大，写放大， 空间放大之间做好权衡。具有多线程压缩数据的功能，可以用于存储数TB级别的数据。</p>
 
       
     </div>
