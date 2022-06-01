@@ -148,6 +148,95 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://mikechengwei.github.io/2022/06/02/golang-gorouting%E9%80%9A%E4%BF%A1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="mikechengwei">
+      <meta itemprop="description" content="I have a girl">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="mikechengwei's Blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2022/06/02/golang-gorouting%E9%80%9A%E4%BF%A1/" class="post-title-link" itemprop="url">golang-gorouting通信</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2022-06-02 00:07:37 / Modified: 01:22:49" itemprop="dateCreated datePublished" datetime="2022-06-02T00:07:37+08:00">2022-06-02</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h1><p>本文介绍 Golang gorouting 通信的几种机制，了解多协程之间是如何通信的。</p>
+<h2 id="Gorouting"><a href="#Gorouting" class="headerlink" title="Gorouting"></a>Gorouting</h2><p>Goroutine是Go中最基本的执行单元。相比于线程，线程是进程中一个单位，由物理CPU进行调度，拥有自己的栈空间，共享堆空间。Gorouting是Go的协程实现，在语言层控制，由程序员在代码层显示调度。</p>
+<h2 id="Go-runtime-scheduler"><a href="#Go-runtime-scheduler" class="headerlink" title="Go runtime scheduler"></a>Go runtime scheduler</h2><p>go runtime 会负责goroutine的生老病死，从创建到销毁。Runtime会在程序启动的时候，创建M个线程，创建N个gorouting 都会依附在这M个协程上执行。这就是M:N 模型。</p>
+<img src="/2022/06/02/golang-gorouting%E9%80%9A%E4%BF%A1/g-m-n.png" class="" title="This is an operator_update.png">
+
+<p>Schedueler 包含三个部分，g，m，p。</p>
+<ul>
+<li>g 代表gorouting</li>
+<li>p 代表一个虚拟的processor，它维护一个处于 Runnable 状态的 g 队列</li>
+<li>m表示内核线程，包含正在运行的 goroutine 等字段。</li>
+</ul>
+<p>一个gorouting调度流程如下</p>
+<ol>
+<li>创建一个新的gorouting</li>
+<li>放到本地或者共享队列中</li>
+<li>M 负责唤醒线程或者创建线程启动goroutine</li>
+<li>循环调度</li>
+<li>尝试或者一个gorouting 执行</li>
+<li>清理，M进入重新循环调度。</li>
+</ol>
+<img src="/2022/06/02/golang-gorouting%E9%80%9A%E4%BF%A1/gorouting-workflow.png" class="" title="This is an operator_update.png">
+
+
+
+<p>#通信方式</p>
+<ul>
+<li>全局共享变量</li>
+<li>channel通信</li>
+<li>Context包</li>
+</ul>
+<h2 id="全局共享变量"><a href="#全局共享变量" class="headerlink" title="全局共享变量"></a>全局共享变量</h2><p>声明一个全局环境变量， 所有子goroutine共享这个变量，并不断轮询这个变量检查是否有更新。</p>
+<h2 id="channel通信"><a href="#channel通信" class="headerlink" title="channel通信"></a>channel通信</h2>
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-Hans">
     <link itemprop="mainEntityOfPage" href="http://mikechengwei.github.io/2022/04/19/LevelDB%20RocksDB%20Boltdb%20Compare/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -881,7 +970,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">5</span>
+          <span class="site-state-item-count">6</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
