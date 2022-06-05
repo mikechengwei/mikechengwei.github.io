@@ -179,7 +179,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-06-04 22:29:15" itemprop="dateModified" datetime="2022-06-04T22:29:15+08:00">2022-06-04</time>
+                <time title="Modified: 2022-06-05 23:58:57" itemprop="dateModified" datetime="2022-06-05T23:58:57+08:00">2022-06-05</time>
               </span>
 
           
@@ -225,6 +225,7 @@
 </ul>
 <h2 id="全局共享变量"><a href="#全局共享变量" class="headerlink" title="全局共享变量"></a>全局共享变量</h2><p>声明一个全局环境变量， 所有子goroutine共享这个变量，并不断轮询这个变量检查是否有更新。</p>
 <h2 id="channel通信"><a href="#channel通信" class="headerlink" title="channel通信"></a>channel通信</h2><p>go中有一个数据类型 chan，用于在gorouteines之间消息通信，具备缓存功能。</p>
+<h3 id="channel的使用方法"><a href="#channel的使用方法" class="headerlink" title="channel的使用方法"></a>channel的使用方法</h3> <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"> func main() &#123;</span><br><span class="line">	data :&#x3D; make(chan int)</span><br><span class="line"></span><br><span class="line">	go func() &#123;</span><br><span class="line">		for d :&#x3D; range data &#123;&#x2F;&#x2F;通过range不断地处理data</span><br><span class="line">			fmt.Println(d)</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;()</span><br><span class="line"></span><br><span class="line">	data &lt;- 1&#x2F;&#x2F;发送要放在接收协程跑起来后面，因为发送后会阻塞等待接收</span><br><span class="line">	data &lt;- 2</span><br><span class="line">	data &lt;- 3</span><br><span class="line">	close(data)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
       
     </div>
