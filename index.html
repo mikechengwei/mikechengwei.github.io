@@ -179,7 +179,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-06-06 23:46:24" itemprop="dateModified" datetime="2022-06-06T23:46:24+08:00">2022-06-06</time>
+                <time title="Modified: 2022-06-07 23:45:37" itemprop="dateModified" datetime="2022-06-07T23:45:37+08:00">2022-06-07</time>
               </span>
 
           
@@ -225,6 +225,15 @@
 </ul>
 <h2 id="全局共享变量"><a href="#全局共享变量" class="headerlink" title="全局共享变量"></a>全局共享变量</h2><p>声明一个全局环境变量， 所有子goroutine共享这个变量，并不断轮询这个变量检查是否有更新。</p>
 <h2 id="channel通信"><a href="#channel通信" class="headerlink" title="channel通信"></a>channel通信</h2><p>go中有一个数据类型 chan，用于在gorouteines之间消息通信，具备缓存功能。</p>
+<h3 id="channel-特性"><a href="#channel-特性" class="headerlink" title="channel 特性"></a>channel 特性</h3><ul>
+<li>线程安全：hchan mutex</li>
+<li>先进先出：copying into and out of hchan buffer</li>
+<li>channel的高性能所在：<ul>
+<li>调用runtime scheduler实现，OS thread不需要阻塞；</li>
+<li>跨goroutine栈可以直接进行读写；</li>
+</ul>
+</li>
+</ul>
 <h3 id="channel的使用方法"><a href="#channel的使用方法" class="headerlink" title="channel的使用方法"></a>channel的使用方法</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">func main() &#123;</span><br><span class="line">	&#x2F;&#x2F;创建通道</span><br><span class="line">	data :&#x3D; make(chan int)</span><br><span class="line">	&#x2F;&#x2F;创建一个等待组</span><br><span class="line">	var wg  sync.WaitGroup</span><br><span class="line">	wg.Add(3)</span><br><span class="line">	go func() &#123;</span><br><span class="line">		for d :&#x3D; range data &#123;&#x2F;&#x2F;通过range不断地处理data</span><br><span class="line">			fmt.Println(d)</span><br><span class="line">			wg.Done()</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;()</span><br><span class="line"></span><br><span class="line">	data &lt;- 1&#x2F;&#x2F;发送要放在接收协程跑起来后面，因为发送后会阻塞等待接收</span><br><span class="line">	data &lt;- 2</span><br><span class="line">	data &lt;- 3</span><br><span class="line">	&#x2F;&#x2F;等待channel中所有的数据输出</span><br><span class="line">	wg.Wait()</span><br><span class="line">	close(data)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 
@@ -264,6 +273,28 @@
 <ul>
 <li>CSP并发模型：不要以共享内存的方式来通信，相反，要通过通信的方式来共享内存。</li>
 </ul>
+<h3 id="channel发送流程"><a href="#channel发送流程" class="headerlink" title="channel发送流程"></a>channel发送流程</h3><p>向一个channel 发送数据的时候，流程如下:</p>
+<ol>
+<li>如果接收队列recvq不为空，说明缓冲区中没有数据或者没有缓冲区，此时直接从recvq中取出G,并把数据写入，最后唤醒G。结束发送过程</li>
+<li>如果缓冲区有空余位置，将数据写入缓冲区，结束发送过程</li>
+<li>如果缓冲区没有空余位置，将待发送数据写入G,将当前G加入sendq，进入睡眠，等待被读G唤醒。</li>
+</ol>
+<p>有goroutine阻塞在channel recv队列时，此时缓存队列为空，则直接将消息发送给reciver gourotine，只产生一次数据copy。</p>
+<h3 id="channel-写入流程"><a href="#channel-写入流程" class="headerlink" title="channel 写入流程"></a>channel 写入流程</h3><p>向一个channel写入数据的时候，流程如下：</p>
+<ol>
+<li>如果channel上的recveq队列非空的时候，跳过channel的缓冲队列，直接将数据发送给接受的gorouting<ol>
+<li>调用sendDirect方法，将待写入的消息发送给接收的goroutine</li>
+<li>释放channel的全局锁</li>
+<li>调用goready函数，将接收消息的goroutine设置成就绪状态，等待调度</li>
+</ol>
+</li>
+<li>缓存队列未满，则将消息复制到缓存队列上，然后释放全局锁</li>
+<li>缓存队列已满且接收消息队列recv为空，则将当前的goroutine加入到send队列<ol>
+<li>获取当前gorouting的sudog，然后加入到channel的sendq队列</li>
+<li>将当前gorouting睡眠。</li>
+</ol>
+</li>
+</ol>
 
       
     </div>
