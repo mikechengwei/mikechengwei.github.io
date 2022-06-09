@@ -179,7 +179,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-06-07 23:45:37" itemprop="dateModified" datetime="2022-06-07T23:45:37+08:00">2022-06-07</time>
+                <time title="Modified: 2022-06-09 23:57:02" itemprop="dateModified" datetime="2022-06-09T23:57:02+08:00">2022-06-09</time>
               </span>
 
           
@@ -195,7 +195,7 @@
       
           <h1 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h1><p>本文介绍 Golang gorouting 通信的几种机制，了解多协程之间是如何通信的。</p>
 <h2 id="Gorouting"><a href="#Gorouting" class="headerlink" title="Gorouting"></a>Gorouting</h2><p>Goroutine是Go中最基本的执行单元。相比于线程，线程是进程中一个单位，由物理CPU进行调度，拥有自己的栈空间，共享堆空间。Gorouting是Go的协程实现，在语言层控制，由程序员在代码层显示调度。</p>
-<h2 id="Go-runtime-scheduler"><a href="#Go-runtime-scheduler" class="headerlink" title="Go runtime scheduler"></a>Go runtime scheduler</h2><p>go runtime 会负责goroutine的生老病死，从创建到销毁。Runtime会在程序启动的时候，创建M个线程，创建N个gorouting 都会依附在这M个协程上执行。这就是M:N 模型。</p>
+<h2 id="Go-runtime-scheduler"><a href="#Go-runtime-scheduler" class="headerlink" title="Go runtime scheduler"></a>Go runtime scheduler</h2><p>go runtime 会负责goroutine的生老病死，从创建到销毁。Runtime会在程序启动的时候，创建M个线程，创建N个gorouting 都会依附在这M个线程上执行。这就是M:N 模型。</p>
 <img src="/2022/06/02/golang-gorouting%E9%80%9A%E4%BF%A1/g-m-n.png" class="" title="This is an operator_update.png">
 
 <p>Schedueler 包含三个部分，g，m，p。</p>
@@ -217,8 +217,7 @@
 
 
 
-<p>#通信方式</p>
-<ul>
+<h1 id="通信方式"><a href="#通信方式" class="headerlink" title="通信方式"></a>通信方式</h1><ul>
 <li>全局共享变量</li>
 <li>channel通信</li>
 <li>Context包</li>
