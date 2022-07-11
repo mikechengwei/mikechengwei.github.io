@@ -179,7 +179,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-07-10 23:41:13" itemprop="dateModified" datetime="2022-07-10T23:41:13+08:00">2022-07-10</time>
+                <time title="Modified: 2022-07-11 23:59:43" itemprop="dateModified" datetime="2022-07-11T23:59:43+08:00">2022-07-11</time>
               </span>
 
           
@@ -212,7 +212,8 @@
 <li>不依赖时间保证日志的一致性：错误的时钟和极端的消息延迟，在最坏的情况下，可能会导致可用性问题。</li>
 <li>绝大多数服务器处理完命令，即可响应请求返回；少数服务器慢不影响整体系统性能。</li>
 </ul>
-<h2 id="Paxos-有什么问题？"><a href="#Paxos-有什么问题？" class="headerlink" title="Paxos 有什么问题？"></a>Paxos 有什么问题？</h2><h3 id="Raft基础概念"><a href="#Raft基础概念" class="headerlink" title="Raft基础概念"></a>Raft基础概念</h3><h4 id="角色"><a href="#角色" class="headerlink" title="角色"></a>角色</h4><p>在Raft中，有三种角色:</p>
+<h2 id="Paxos-有什么问题？"><a href="#Paxos-有什么问题？" class="headerlink" title="Paxos 有什么问题？"></a>Paxos 有什么问题？</h2><p>paxos主要说的单个命令的决定，如果是多个命令称之为multi-paxos。</p>
+<h3 id="Raft基础概念"><a href="#Raft基础概念" class="headerlink" title="Raft基础概念"></a>Raft基础概念</h3><h4 id="角色"><a href="#角色" class="headerlink" title="角色"></a>角色</h4><p>在Raft中，有三种角色:</p>
 <ul>
 <li>Leader: 所有请求的处理者，Leader副本接受client的更新请求，本地处理后再同步至多个其他副本。</li>
 <li>Follower: 请求的被动更新者，从Leader接受更新请求，然后写入本地日志中。</li>
