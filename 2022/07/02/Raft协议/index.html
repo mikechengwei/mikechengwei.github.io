@@ -23,15 +23,15 @@
   <meta name="description" content="Raft协议分布式存储系统通常通过维护多个副本来进行容错，提高系统的可用性。要实现此目标，就必须要解决分布式存储系统的最核心问题：维护多个副本的一致性。而Raft正是为探索一种简单易理解的一致性算法而产生的，Raft是管理日志复制的一致性算法。 Raft 协议所要达成的结果与multi-paxos相同，但是Raft协议的结构与Paxos不同，Raft协议更简单，更容易让人理解。 Raft 将一致">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Raft协议（论文学习）">
-<meta property="og:url" content="http://mikechengwei.github.io/2022/07/02/%E5%B8%B8%E8%A7%81%E7%9A%84%E5%87%A0%E7%A7%8D%E5%88%86%E5%B8%83%E5%BC%8F%E5%8D%8F%E8%AE%AE/index.html">
+<meta property="og:url" content="http://mikechengwei.github.io/2022/07/02/Raft%E5%8D%8F%E8%AE%AE/index.html">
 <meta property="og:site_name" content="mikechengwei&#39;s Blog">
 <meta property="og:description" content="Raft协议分布式存储系统通常通过维护多个副本来进行容错，提高系统的可用性。要实现此目标，就必须要解决分布式存储系统的最核心问题：维护多个副本的一致性。而Raft正是为探索一种简单易理解的一致性算法而产生的，Raft是管理日志复制的一致性算法。 Raft 协议所要达成的结果与multi-paxos相同，但是Raft协议的结构与Paxos不同，Raft协议更简单，更容易让人理解。 Raft 将一致">
 <meta property="article:published_time" content="2022-07-02T15:54:14.000Z">
-<meta property="article:modified_time" content="2022-07-15T15:59:17.105Z">
+<meta property="article:modified_time" content="2022-07-17T15:50:05.504Z">
 <meta property="article:author" content="mikechengwei">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="http://mikechengwei.github.io/2022/07/02/%E5%B8%B8%E8%A7%81%E7%9A%84%E5%87%A0%E7%A7%8D%E5%88%86%E5%B8%83%E5%BC%8F%E5%8D%8F%E8%AE%AE/">
+<link rel="canonical" href="http://mikechengwei.github.io/2022/07/02/Raft%E5%8D%8F%E8%AE%AE/">
 
 
 <script id="page-configurations">
@@ -151,7 +151,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-Hans">
-    <link itemprop="mainEntityOfPage" href="http://mikechengwei.github.io/2022/07/02/%E5%B8%B8%E8%A7%81%E7%9A%84%E5%87%A0%E7%A7%8D%E5%88%86%E5%B8%83%E5%BC%8F%E5%8D%8F%E8%AE%AE/">
+    <link itemprop="mainEntityOfPage" href="http://mikechengwei.github.io/2022/07/02/Raft%E5%8D%8F%E8%AE%AE/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -181,7 +181,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-07-15 23:59:17" itemprop="dateModified" datetime="2022-07-15T23:59:17+08:00">2022-07-15</time>
+                <time title="Modified: 2022-07-17 23:50:05" itemprop="dateModified" datetime="2022-07-17T23:50:05+08:00">2022-07-17</time>
               </span>
 
           
@@ -214,8 +214,10 @@
 <li>不依赖时间保证日志的一致性：错误的时钟和极端的消息延迟，在最坏的情况下，可能会导致可用性问题。</li>
 <li>绝大多数服务器处理完命令，即可响应请求返回；少数服务器慢不影响整体系统性能。</li>
 </ul>
-<h2 id="Paxos-有什么问题？"><a href="#Paxos-有什么问题？" class="headerlink" title="Paxos 有什么问题？"></a>Paxos 有什么问题？</h2><p>paxos主要说的单个命令的决定，如果是多个命令称之为multi-paxos。不幸的是，paxos有两个缺点。</p>
-<h3 id="Raft基础概念"><a href="#Raft基础概念" class="headerlink" title="Raft基础概念"></a>Raft基础概念</h3><h4 id="角色"><a href="#角色" class="headerlink" title="角色"></a>角色</h4><p>在Raft中，有三种角色:</p>
+<h2 id="Paxos-有什么问题？"><a href="#Paxos-有什么问题？" class="headerlink" title="Paxos 有什么问题？"></a>Paxos 有什么问题？</h2><p>paxos主要说的单个决策达成一致的协议，比如一条需要复制的数据。多个实例之间组成的一系列决策称之为multi-Paxos。paxos保证了安全性和可用性，也支持集群关系的变更。<br>不幸的是，Paxos有两个重要的缺点。第一个缺点是Paxos难以理解。<br>第二个缺点是paxos没有为构建实际实现提供良好的基础。这其中一个原因是多实例paxos算法并没有广泛认可。Lamport的理论大部分都是说的单个决策Paxos协议，对于多实例paxos只是大致勾勒，很多细节是缺失的。</p>
+<p>paxos的架构难以构建实用的系统，</p>
+<h2 id="做一个可以理解的设计"><a href="#做一个可以理解的设计" class="headerlink" title="做一个可以理解的设计"></a>做一个可以理解的设计</h2><p>在设计Raft协议中，要求以下几点目标。</p>
+<h2 id="Raft一致性算法"><a href="#Raft一致性算法" class="headerlink" title="Raft一致性算法"></a>Raft一致性算法</h2><h3 id="Raft基础概念"><a href="#Raft基础概念" class="headerlink" title="Raft基础概念"></a>Raft基础概念</h3><h4 id="角色"><a href="#角色" class="headerlink" title="角色"></a>角色</h4><p>在Raft中，有三种角色:</p>
 <ul>
 <li>Leader: 所有请求的处理者，Leader副本接受client的更新请求，本地处理后再同步至多个其他副本。</li>
 <li>Follower: 请求的被动更新者，从Leader接受更新请求，然后写入本地日志中。</li>
@@ -299,7 +301,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Raft协议"><span class="nav-number">1.</span> <span class="nav-text">Raft协议</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#状态机复制-Replicated-state-machines"><span class="nav-number">1.1.</span> <span class="nav-text">状态机复制 Replicated state machines</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Paxos-有什么问题？"><span class="nav-number">1.2.</span> <span class="nav-text">Paxos 有什么问题？</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Raft基础概念"><span class="nav-number">1.2.1.</span> <span class="nav-text">Raft基础概念</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#角色"><span class="nav-number">1.2.1.1.</span> <span class="nav-text">角色</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#任期"><span class="nav-number">1.2.1.2.</span> <span class="nav-text">任期</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#日志队列"><span class="nav-number">1.2.1.3.</span> <span class="nav-text">日志队列</span></a></li></ol></li></ol></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Raft协议"><span class="nav-number">1.</span> <span class="nav-text">Raft协议</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#状态机复制-Replicated-state-machines"><span class="nav-number">1.1.</span> <span class="nav-text">状态机复制 Replicated state machines</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Paxos-有什么问题？"><span class="nav-number">1.2.</span> <span class="nav-text">Paxos 有什么问题？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#做一个可以理解的设计"><span class="nav-number">1.3.</span> <span class="nav-text">做一个可以理解的设计</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Raft一致性算法"><span class="nav-number">1.4.</span> <span class="nav-text">Raft一致性算法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Raft基础概念"><span class="nav-number">1.4.1.</span> <span class="nav-text">Raft基础概念</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#角色"><span class="nav-number">1.4.1.1.</span> <span class="nav-text">角色</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#任期"><span class="nav-number">1.4.1.2.</span> <span class="nav-text">任期</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#日志队列"><span class="nav-number">1.4.1.3.</span> <span class="nav-text">日志队列</span></a></li></ol></li></ol></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
