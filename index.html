@@ -179,7 +179,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-07-30 23:56:50" itemprop="dateModified" datetime="2022-07-30T23:56:50+08:00">2022-07-30</time>
+                <time title="Modified: 2022-08-01 23:58:31" itemprop="dateModified" datetime="2022-08-01T23:58:31+08:00">2022-08-01</time>
               </span>
 
           
@@ -213,7 +213,7 @@
 <li>绝大多数服务器处理完命令，即可响应请求返回；少数服务器慢不影响整体系统性能。</li>
 </ul>
 <h2 id="Paxos-有什么问题？"><a href="#Paxos-有什么问题？" class="headerlink" title="Paxos 有什么问题？"></a>Paxos 有什么问题？</h2><p>paxos主要说的单个决策达成一致的协议，比如一条需要复制的数据。多个实例之间组成的一系列决策称之为multi-Paxos。paxos保证了安全性和可用性，也支持集群关系的变更。<br>不幸的是，Paxos有两个重要的缺点。第一个缺点是Paxos难以理解。<br>第二个缺点是paxos没有为构建实际实现提供良好的基础。这其中一个原因是多实例paxos算法并没有广泛认可。Lamport的理论大部分都是说的单个决策Paxos协议，对于多实例paxos只是大致勾勒，很多细节是缺失的。</p>
-<p>paxos的架构难以构建实用的系统。</p>
+<p>paxos的架构难以构建实用的系统，paxos理论设计multiple-paxos模块不多，作者主要说的是单个决策一致的协议。</p>
 <h2 id="做一个可以理解的设计"><a href="#做一个可以理解的设计" class="headerlink" title="做一个可以理解的设计"></a>做一个可以理解的设计</h2><p>在设计Raft协议中，要求以下几点目标:</p>
 <h2 id="Raft一致性算法"><a href="#Raft一致性算法" class="headerlink" title="Raft一致性算法"></a>Raft一致性算法</h2><h3 id="Raft基础概念"><a href="#Raft基础概念" class="headerlink" title="Raft基础概念"></a>Raft基础概念</h3><h4 id="角色"><a href="#角色" class="headerlink" title="角色"></a>角色</h4><p>在Raft中，有三种角色:</p>
 <ul>
