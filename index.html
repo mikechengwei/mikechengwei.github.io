@@ -179,7 +179,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-08-02 00:11:48" itemprop="dateModified" datetime="2022-08-02T00:11:48+08:00">2022-08-02</time>
+                <time title="Modified: 2022-08-15 23:50:42" itemprop="dateModified" datetime="2022-08-15T23:50:42+08:00">2022-08-15</time>
               </span>
 
           
@@ -217,7 +217,28 @@
 <p>Paxos 的实现采用弱领导化的设计，但是在实际系统中，会选择一个领导者，然后让领导者协调决策更简单、更快捷。因此，实际系统与 Paxos 几乎没有相似之处。每个实现都从 Paxos 开始，发现实现它的困难，然后开发出截然不同的架构。这是耗时且容易出错的，而且理解 Paxos 的困难加剧了这个问题。 Paxos 的公式对于证明其正确性的定理可能是一个很好的公式，但实际的实现与 Paxos 是如此不同，以至于证明几乎没有价值。</p>
 <p>由于这些问题，我们得出结论，Paxos 没有为系统构建或教育提供良好的基础。考虑到共识在大规模软件系统中的重要性，我们决定看看我们是否可以设计出一种性能比 Paxos 更好的替代共识算法。 所以提出了 Raft 协议。</p>
 <h2 id="做一个可以理解的设计"><a href="#做一个可以理解的设计" class="headerlink" title="做一个可以理解的设计"></a>做一个可以理解的设计</h2><p>在设计Raft协议中，要求以下几点目标:</p>
-<h2 id="Raft一致性算法"><a href="#Raft一致性算法" class="headerlink" title="Raft一致性算法"></a>Raft一致性算法</h2><h3 id="Raft基础概念"><a href="#Raft基础概念" class="headerlink" title="Raft基础概念"></a>Raft基础概念</h3><h4 id="角色"><a href="#角色" class="headerlink" title="角色"></a>角色</h4><p>在Raft中，有三种角色:</p>
+<ul>
+<li>可以构建完整和实用的系统，减少开发者的设计量。<ul>
+<li>在所有条件下是安全的，在典型的操作条件下是可用的。</li>
+<li>高效的</li>
+<li>最重要的是可理解性。</li>
+</ul>
+</li>
+</ul>
+<p>采用两种方式做好可理解性。第一种方法是问题分解，将问题拆解为:</p>
+<ul>
+<li><p>leader 选举</p>
+</li>
+<li><p>日志复制</p>
+</li>
+<li><p>安全性</p>
+</li>
+<li><p>成员变更</p>
+<p>第二种方式是简化状态变化，减少需要考虑的状态，使系统更加连贯，消除不确定性。</p>
+</li>
+</ul>
+<h2 id="Raft一致性算法"><a href="#Raft一致性算法" class="headerlink" title="Raft一致性算法"></a>Raft一致性算法</h2><p>Raft 是一种用于管理复制日志的算法。Raft 先选举一个leader达成共识，然后让leader完全负责管理复制的日志。领导者接受来自客户端的日志条目，将它们复制到其他服务器上，并告诉服务器何时可以安全地将日志条目应用于其状态机。拥有领导者可以简化复制日志的管理。例如，领导者可以在不咨询其他服务器的情况下决定在日志中放置新条目的位置，并且数据以简单的方式从leader流向其他follower。领导者可能会失败或与其他服务器断开连接，在这种情况下会选出新的领导者。</p>
+<h3 id="Raft基础概念"><a href="#Raft基础概念" class="headerlink" title="Raft基础概念"></a>Raft基础概念</h3><h4 id="角色"><a href="#角色" class="headerlink" title="角色"></a>角色</h4><p>在Raft中，有三种角色:</p>
 <ul>
 <li>Leader: 所有请求的处理者，Leader副本接受client的更新请求，本地处理后再同步至多个其他副本。</li>
 <li>Follower: 请求的被动更新者，从Leader接受更新请求，然后写入本地日志中。</li>
