@@ -179,7 +179,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-08-15 23:56:34" itemprop="dateModified" datetime="2022-08-15T23:56:34+08:00">2022-08-15</time>
+                <time title="Modified: 2022-08-16 00:02:25" itemprop="dateModified" datetime="2022-08-16T00:02:25+08:00">2022-08-16</time>
               </span>
 
           
@@ -241,8 +241,8 @@
 <p>采用leader 方法，Raft将一致性问题拆解为三个子问题。</p>
 <ul>
 <li>Leader election: 当已有leader宕机，必须选择一个新的leader。</li>
-<li>Log replication: leader 接受客户端提交的日志，并将其复制到集群中其他节点，</li>
-<li>Safety:</li>
+<li>Log replication: leader 接受客户端提交的日志，并将其复制到集群中其他节点。</li>
+<li>Safety: 如果大多数服务器已将特定的日志条目应用到其状态机，则没有其他服务器可以对相同的日志索引应用不同的命令。</li>
 </ul>
 <h3 id="Raft基础概念"><a href="#Raft基础概念" class="headerlink" title="Raft基础概念"></a>Raft基础概念</h3><h4 id="角色"><a href="#角色" class="headerlink" title="角色"></a>角色</h4><p>在Raft中，有三种角色:</p>
 <ul>
@@ -251,7 +251,7 @@
 <li>Candidate：如果Follower副本在一段时间内没有收到Leader副本的心跳，则判断Leader可能已经故障，此时启动选主过程，此时副本会变成Candidate状态，直到选主结束。</li>
 </ul>
 <h4 id="任期"><a href="#任期" class="headerlink" title="任期"></a>任期</h4><p>Raft 把时间切割为任意长度的任期，每一个任期都有一个任期号，才用连续的整数。<br>每个任期都由一次选举开始，若选举失败则这个任期内没有leader，如果选举了Leader则这个任期内有Leader负责状态管理。</p>
-<h4 id="日志队列"><a href="#日志队列" class="headerlink" title="日志队列"></a>日志队列</h4>
+
       
     </div>
 
