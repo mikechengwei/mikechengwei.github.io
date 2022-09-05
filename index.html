@@ -148,6 +148,67 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://mikechengwei.github.io/2022/09/05/Rocksdb-%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="mikechengwei">
+      <meta itemprop="description" content="I have a girl">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="mikechengwei's Blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2022/09/05/Rocksdb-%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/" class="post-title-link" itemprop="url">Rocksdb_源码分析</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2022-09-05 23:37:37 / Modified: 23:51:12" itemprop="dateCreated datePublished" datetime="2022-09-05T23:37:37+08:00">2022-09-05</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="上层结构"><a href="#上层结构" class="headerlink" title="上层结构"></a>上层结构</h2><p>组成RocksDB的三个组成部分，memtable，sstfile和logfile。memtable是一个内存型数据结构。新的写入会写进memtable，并且可以有选择的写入logfile。logfile是一个顺序写入的文件。当一个memtable 内存写满，相应的刷写到磁盘上的sstfile，相应的logfile也可以安全的删除。sstfile中的数据是有序的。</p>
+<img src="/2022/09/05/Rocksdb-%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/rocksdb.png" class="" title="This is an rocksdb.png">
+
+<h2 id="源码分析"><a href="#源码分析" class="headerlink" title="源码分析"></a>源码分析</h2>
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-Hans">
     <link itemprop="mainEntityOfPage" href="http://mikechengwei.github.io/2022/07/02/Raft%E5%8D%8F%E8%AE%AE/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -476,7 +537,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-05-27 20:19:22" itemprop="dateModified" datetime="2022-05-27T20:19:22+08:00">2022-05-27</time>
+                <time title="Modified: 2022-09-05 23:36:18" itemprop="dateModified" datetime="2022-09-05T23:36:18+08:00">2022-09-05</time>
               </span>
 
           
@@ -558,7 +619,9 @@
 <h2 id="Garbage-collection-of-files"><a href="#Garbage-collection-of-files" class="headerlink" title="Garbage collection of files"></a>Garbage collection of files</h2><p>在每次压缩结束和恢复结束的时候都会调用 RemoveObsoleteFiles 方法。它会查找数据库所有文件，它会删除所有不是当前当前日志文件的日志文件。它会删除所有未从某个Level引用且不是当前正在压缩的输出的table文件。</p>
 <h1 id="RocksDB"><a href="#RocksDB" class="headerlink" title="RocksDB"></a>RocksDB</h1><p>Rocksdb 是fackebook数据库团队提供。也是采用 Log-Structured-Merge-Database (LSM) 数据结构，可在读放大，写放大， 空间放大之间做好权衡。具有多线程压缩数据的功能，可以用于存储数TB级别的数据。</p>
 <p>LSM-Tree是将离散的随机写请求转换成批量的顺序写请求(wal+compaction)。</p>
-<p>读放大: LSM 将数据拆分成很多个文件，需要逐级查找，想要查询到想要的数据，可能需要不止一次I/O操作，打开多个文件。<br>空间放大: 由于LSM都有定期压缩的功能，所以无效数据不会立即清理，空间存储有冗余数据。<br>写放大:从用户视角是写了一遍数据，但是在后台包含 redo log的写入/内存数据 Immutable Memtable 写入到 L0 文件/文件进行压缩重新回写磁盘。</p>
+<p>读放大: LSM 将数据拆分成很多个文件，需要逐级查找，想要查询到想要的数据，可能需要不止一次I/O操作，打开多个文件。</p>
+<p>空间放大: 由于LSM都有定期压缩的功能，所以无效数据不会立即清理，空间存储有冗余数据。</p>
+<p>写放大:从用户视角是写了一遍数据，但是在后台包含 redo log的写入/内存数据 Immutable Memtable 写入到 L0 文件/文件进行压缩重新回写磁盘。</p>
 <h2 id="LSM-介绍"><a href="#LSM-介绍" class="headerlink" title="LSM 介绍"></a>LSM 介绍</h2><p>LSM Trees有leveled和size-tiered两种形式。</p>
 <h3 id="Tiered-类型介绍"><a href="#Tiered-类型介绍" class="headerlink" title="Tiered 类型介绍"></a>Tiered 类型介绍</h3><p>Tiered 是等待多个相近大小的 sorted runs 或者 sstables 达到阈值后合并到一个更大的 runs，从而提供更小的写放大以及更高的写吞吐。Cassandra、ScyllaDB 就采用了这样的方式。但是没有限制重叠的 Tables 的数量从而导致较大的查询开销。</p>
 <h3 id="Leveled-类型介绍"><a href="#Leveled-类型介绍" class="headerlink" title="Leveled 类型介绍"></a>Leveled 类型介绍</h3><p> Leveled 的策略就是把小的 sorted run 合并一个更大的 sorted run 来保证重叠的 Tables 数量小于阈值，该策略却是保证了较好的读性能但是因为归并排序的方式导致写放大比较严峻</p>
@@ -1178,7 +1241,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">7</span>
+          <span class="site-state-item-count">8</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -1187,7 +1250,7 @@
         <span class="site-state-item-name">categories</span>
       </div>
       <div class="site-state-item site-state-tags">
-        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-count">7</span>
         <span class="site-state-item-name">tags</span>
       </div>
   </nav>
