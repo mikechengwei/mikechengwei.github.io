@@ -238,7 +238,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-09-07 00:00:07" itemprop="dateModified" datetime="2022-09-07T00:00:07+08:00">2022-09-07</time>
+                <time title="Modified: 2022-09-07 23:53:25" itemprop="dateModified" datetime="2022-09-07T23:53:25+08:00">2022-09-07</time>
               </span>
 
           
@@ -253,10 +253,12 @@
 
       
           <h1 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h1><p>RocksDB 在 Facebook 开始时是作为各种存储介质上服务器工作负载的存储引擎，最初专注于快速存储（尤其是闪存存储）。这是一个C++库，用于存储任意大小的keys和values。它支持点查找和范围扫描，并提供不同类型的 ACID 保证。<br>RocksDB借鉴了开源leveldb项目的重要代码以及Apache HBase的想法。最初的代码是从开源leveldb 1.5派生而来。也基于在RocksDB之前在Facebook开发的代码和想法。</p>
-<h2 id="上层结构"><a href="#上层结构" class="headerlink" title="上层结构"></a>上层结构</h2><p>RocksDB的三个组成部分有memtable，sstfile和logfile。memtable是一个内存型数据结构。新的写入会写进memtable，并且可以有选择的写入logfile。logfile是一个顺序写入的文件。当一个memtable 内存写满，相应的刷写到磁盘上的sstfile，相应的logfile也可以安全的删除。sstfile中的数据是有序的。</p>
+<h1 id="上层结构"><a href="#上层结构" class="headerlink" title="上层结构"></a>上层结构</h1><p>RocksDB的三个组成部分有memtable，sstfile和logfile。memtable是一个内存型数据结构。新的写入会写进memtable，并且可以有选择的写入logfile。logfile是一个顺序写入的文件。当一个memtable 内存写满，相应的刷写到磁盘上的sstfile，相应的logfile也可以安全的删除。sstfile中的数据是有序的。</p>
 <img src="/2022/09/05/Rocksdb-%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/rocksdb.png" class="" title="This is an rocksdb.png">
 
-<h2 id="源码分析"><a href="#源码分析" class="headerlink" title="源码分析"></a>源码分析</h2>
+<h1 id="源码分析"><a href="#源码分析" class="headerlink" title="源码分析"></a>源码分析</h1><h2 id="Memtable-数据结构"><a href="#Memtable-数据结构" class="headerlink" title="Memtable 数据结构"></a>Memtable 数据结构</h2><p>Memtable 是一个持有数据的内存数据结构，在落盘成为sstfile文件操作之前。memtable 同时用于读写，新的数据会写入memtable，读操作也必须查询memtable，因为在memtable中的数据是最新的。有一个后台线程会将memtable中的数据刷写到一个SST文件。</p>
+<p>默认memtable的实现是基于skiplist。用户也可以使用其他数据结构，比如 HashLinkList，HashSkipList或者Vector</p>
+
       
     </div>
 
