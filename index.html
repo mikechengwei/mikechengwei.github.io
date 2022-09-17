@@ -605,7 +605,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-09-13 23:55:06" itemprop="dateModified" datetime="2022-09-13T23:55:06+08:00">2022-09-13</time>
+                <time title="Modified: 2022-09-17 23:59:21" itemprop="dateModified" datetime="2022-09-17T23:59:21+08:00">2022-09-17</time>
               </span>
 
           
@@ -690,8 +690,10 @@
 <p>读放大: LSM 将数据拆分成很多个文件，需要逐级查找，想要查询到想要的数据，可能需要不止一次I/O操作，打开多个文件。</p>
 <p>空间放大: 由于LSM都有定期压缩的功能，所以无效数据不会立即清理，空间存储有冗余数据。</p>
 <p>写放大:从用户视角是写了一遍数据，但是在后台包含 redo log的写入/内存数据 Immutable Memtable 写入到 L0 文件以及文件进行压缩重新回写磁盘。</p>
-<h2 id="LSM-介绍"><a href="#LSM-介绍" class="headerlink" title="LSM 介绍"></a>LSM 介绍</h2><p>LSM Trees有leveled和size-tiered两种形式。</p>
-<h3 id="Tiered-类型介绍"><a href="#Tiered-类型介绍" class="headerlink" title="Tiered 类型介绍"></a>Tiered 类型介绍</h3><h3 id="Leveled-类型介绍"><a href="#Leveled-类型介绍" class="headerlink" title="Leveled 类型介绍"></a>Leveled 类型介绍</h3><h1 id="Boltdb"><a href="#Boltdb" class="headerlink" title="Boltdb"></a>Boltdb</h1><p>boltdb 相比于rocksdb和leveldb，采用的是b+tree数据结构。如果你的场景是大量的随机读写，leveldb是一个不错的选择。如果你的应用读取需要大量读取或者进行大范围的范围扫描，boltdb是一个不错的选择。</p>
+<h2 id="LSM-介绍"><a href="#LSM-介绍" class="headerlink" title="LSM 介绍"></a>LSM 介绍</h2><p>LSM Compaction 有level 和 size-tiered两种形式。</p>
+<h3 id="Tiered-类型介绍"><a href="#Tiered-类型介绍" class="headerlink" title="Tiered 类型介绍"></a>Tiered 类型介绍</h3><p>每一层的子集是有序的。</p>
+<h3 id="Leveled-类型介绍"><a href="#Leveled-类型介绍" class="headerlink" title="Leveled 类型介绍"></a>Leveled 类型介绍</h3><p>保证每一层都是有序数据集。</p>
+<h1 id="Boltdb"><a href="#Boltdb" class="headerlink" title="Boltdb"></a>Boltdb</h1><p>boltdb 相比于rocksdb和leveldb，采用的是b+tree数据结构。如果你的场景是大量的随机读写，leveldb是一个不错的选择。如果你的应用读取需要大量读取或者进行大范围的范围扫描，boltdb是一个不错的选择。</p>
 
       
     </div>
