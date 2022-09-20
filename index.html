@@ -605,7 +605,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-09-18 00:45:21" itemprop="dateModified" datetime="2022-09-18T00:45:21+08:00">2022-09-18</time>
+                <time title="Modified: 2022-09-20 23:59:06" itemprop="dateModified" datetime="2022-09-20T23:59:06+08:00">2022-09-20</time>
               </span>
 
           
@@ -705,7 +705,6 @@
 <p>LSM Compaction 有level 和 size-tiered两种实现。</p>
 <h3 id="Size-Tiered-Compaction"><a href="#Size-Tiered-Compaction" class="headerlink" title="Size-Tiered Compaction"></a>Size-Tiered Compaction</h3><p>从名字可以看出Size-Tiered 是当Level 0里的文件数量达到一定数量，就开始进行合并至Level 1。每一层都有文件数量的条件判断，满足就进行Compaction。这种方式导致每一层都不是全局有序，只能保证某个文件是有序的。</p>
 <img src="/2022/04/19/LevelDB%20RocksDB%20Boltdb%20Compare/size-tiered.png" class="" title="This is an size-tiered.png">
-
 
 <h3 id="Leveled-Compaction"><a href="#Leveled-Compaction" class="headerlink" title="Leveled Compaction"></a>Leveled Compaction</h3><p>Leveled 保证每一层都是全局有序的，当Level 0有四个文件后，就将Level 0里文件与Level 1的数据进行合并，保证Level 1全局有序。</p>
 <h1 id="Boltdb"><a href="#Boltdb" class="headerlink" title="Boltdb"></a>Boltdb</h1><p>boltdb 相比于rocksdb和leveldb，采用的是b+tree数据结构。如果你的场景是大量的随机读写，leveldb是一个不错的选择。如果你的应用读取需要大量读取或者进行大范围的范围扫描，boltdb是一个不错的选择。</p>
