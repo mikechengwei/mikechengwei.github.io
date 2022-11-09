@@ -162,7 +162,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2022/11/04/%E4%BB%80%E4%B9%88%E6%98%AF%E5%88%97%E5%BC%8F%E5%AD%98%E5%82%A8/" class="post-title-link" itemprop="url">什么是列式存储</a>
+            <a href="/2022/11/04/%E4%BB%80%E4%B9%88%E6%98%AF%E5%88%97%E5%BC%8F%E5%AD%98%E5%82%A8/" class="post-title-link" itemprop="url">行存储与列式存储</a>
         </h2>
 
         <div class="post-meta">
@@ -179,7 +179,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-11-05 23:44:09" itemprop="dateModified" datetime="2022-11-05T23:44:09+08:00">2022-11-05</time>
+                <time title="Modified: 2022-11-09 22:45:20" itemprop="dateModified" datetime="2022-11-09T22:45:20+08:00">2022-11-09</time>
               </span>
 
           
@@ -193,7 +193,13 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h1 id="什么是列式存储"><a href="#什么是列式存储" class="headerlink" title="什么是列式存储"></a>什么是列式存储</h1><p>本文将介绍结构化存储与列式存储的区别。</p>
+          <h1 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h1><p>在OLTP场景下，用户需要足够全的字段数据，会对数据频繁的插入更新删除，选择行存储会比较合适。在OTAP的场景下，数据分析可能只需要某些字段，无需将所有字段数据捞出，可能基于多表构建物化视图，这种方式选择列存储更灵活。</p>
+<h1 id="哪些数据是行存储，哪些数据库是列存储"><a href="#哪些数据是行存储，哪些数据库是列存储" class="headerlink" title="哪些数据是行存储，哪些数据库是列存储"></a>哪些数据是行存储，哪些数据库是列存储</h1><p>行存储的组件有Mysql,TiDB。列存储的产品有Hbase,TiFlash,GP。</p>
+<h1 id="列式存储Hbase"><a href="#列式存储Hbase" class="headerlink" title="列式存储Hbase"></a>列式存储Hbase</h1><p>Hbase 表存储中有列族与列的定义，列族是固定的，列族下的列是稀疏的，可动态增加。<br>Hbase 存储按照region进行切分，一个region中包含多个hstore，一个hstore对应table中的一个列族存储的部分数据。一个hstore由两部分组成，一部分是memstore，另一部分是storefile，底层就是Hfile。</p>
+<h1 id="行存储TiDB"><a href="#行存储TiDB" class="headerlink" title="行存储TiDB"></a>行存储TiDB</h1><p>TiDB的数据存储在TiKV,一条数据映射在TiDB中的结构如下:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Key:   tablePrefix&#123;TableID&#125;_recordPrefixSep&#123;RowID&#125;</span><br><span class="line">Value: [col1, col2, col3, col4]</span><br></pre></td></tr></table></figure>
+
+<p>其中value会将每个column 按照”,” join存储 。</p>
 
       
     </div>
