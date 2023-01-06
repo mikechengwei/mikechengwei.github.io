@@ -20,27 +20,18 @@
     var CONFIG = {"hostname":"mikechengwei.github.io","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="引言最近仔细看了下 Elasticsearch Operator，感觉它的设计有点别出心裁，在集群更新方面，比我所知道的 TiDB Operator 和 Prometheus Operator 做的更好。所以在这里做一个 Elasticsearch Operator 和 TiDB Operator 的对比。 ES Operator 滚动更新ES 作为搜索存储组件，也是一种有状态应用。ES Oper">
+  <meta name="description" content="I have a girl">
 <meta property="og:type" content="article">
-<meta property="og:title" content="看Elasticsearch-Operator-有感">
-<meta property="og:url" content="http://mikechengwei.github.io/2021/08/12/%E7%9C%8B-Elasticsearch-Operator-%E6%9C%89%E6%84%9F/index.html">
+<meta property="og:title" content="学习">
+<meta property="og:url" content="http://mikechengwei.github.io/2023/01/06/%E5%AD%A6%E4%B9%A0/index.html">
 <meta property="og:site_name" content="mikechengwei&#39;s Blog">
-<meta property="og:description" content="引言最近仔细看了下 Elasticsearch Operator，感觉它的设计有点别出心裁，在集群更新方面，比我所知道的 TiDB Operator 和 Prometheus Operator 做的更好。所以在这里做一个 Elasticsearch Operator 和 TiDB Operator 的对比。 ES Operator 滚动更新ES 作为搜索存储组件，也是一种有状态应用。ES Oper">
-<meta property="og:image" content="http://mikechengwei.github.io/2021/08/12/%E7%9C%8B-Elasticsearch-Operator-%E6%9C%89%E6%84%9F/operator_update.png">
-<meta property="og:image" content="http://mikechengwei.github.io/2021/08/12/%E7%9C%8B-Elasticsearch-Operator-%E6%9C%89%E6%84%9F/es_operator_detail.png">
-<meta property="og:image" content="http://mikechengwei.github.io/2021/08/12/%E7%9C%8B-Elasticsearch-Operator-%E6%9C%89%E6%84%9F/tikv_code.png">
-<meta property="og:image" content="http://mikechengwei.github.io/2021/08/12/%E7%9C%8B-Elasticsearch-Operator-%E6%9C%89%E6%84%9F/tikv.png">
-<meta property="article:published_time" content="2021-08-11T17:18:31.000Z">
-<meta property="article:modified_time" content="2021-08-11T17:50:11.478Z">
+<meta property="og:description" content="I have a girl">
+<meta property="article:published_time" content="2023-01-06T15:45:43.000Z">
+<meta property="article:modified_time" content="2023-01-06T15:45:43.342Z">
 <meta property="article:author" content="mikechengwei">
-<meta property="article:tag" content="elasticsearch">
-<meta property="article:tag" content="es">
-<meta property="article:tag" content="operator">
-<meta property="article:tag" content="云原生">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://mikechengwei.github.io/2021/08/12/%E7%9C%8B-Elasticsearch-Operator-%E6%9C%89%E6%84%9F/operator_update.png">
 
-<link rel="canonical" href="http://mikechengwei.github.io/2021/08/12/%E7%9C%8B-Elasticsearch-Operator-%E6%9C%89%E6%84%9F/">
+<link rel="canonical" href="http://mikechengwei.github.io/2023/01/06/%E5%AD%A6%E4%B9%A0/">
 
 
 <script id="page-configurations">
@@ -53,7 +44,7 @@
   };
 </script>
 
-  <title>看Elasticsearch-Operator-有感 | mikechengwei's Blog</title>
+  <title>学习 | mikechengwei's Blog</title>
   
 
 
@@ -160,7 +151,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-Hans">
-    <link itemprop="mainEntityOfPage" href="http://mikechengwei.github.io/2021/08/12/%E7%9C%8B-Elasticsearch-Operator-%E6%9C%89%E6%84%9F/">
+    <link itemprop="mainEntityOfPage" href="http://mikechengwei.github.io/2023/01/06/%E5%AD%A6%E4%B9%A0/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -173,7 +164,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          看Elasticsearch-Operator-有感
+          学习
         </h1>
 
         <div class="post-meta">
@@ -182,18 +173,8 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
-              
 
-              <time title="Created: 2021-08-12 01:18:31 / Modified: 01:50:11" itemprop="dateCreated datePublished" datetime="2021-08-12T01:18:31+08:00">2021-08-12</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E4%BA%91%E5%8E%9F%E7%94%9F/" itemprop="url" rel="index"><span itemprop="name">云原生</span></a>
-                </span>
+              <time title="Created: 2023-01-06 23:45:43" itemprop="dateCreated datePublished" datetime="2023-01-06T23:45:43+08:00">2023-01-06</time>
             </span>
 
           
@@ -207,35 +188,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h2 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h2><p>最近仔细看了下 Elasticsearch Operator，感觉它的设计有点别出心裁，在集群更新方面，比我所知道的 TiDB Operator 和 Prometheus Operator 做的更好。所以在这里做一个 Elasticsearch Operator 和 TiDB Operator 的对比。</p>
-<h2 id="ES-Operator-滚动更新"><a href="#ES-Operator-滚动更新" class="headerlink" title="ES Operator 滚动更新"></a>ES Operator 滚动更新</h2><p>ES 作为搜索存储组件，也是一种有状态应用。ES Operator 在19年的有一个 issue <a href="https://github.com/elastic/cloud-on-k8s/issues/1173" target="_blank" rel="noopener">#1173 </a> ，确定了基于<code>Statefulset</code> 做 ES 的部署。最近阅读完 ES Operator的代码，我发现它虽然基于<code>Statefulset</code>做集群管理，但是节点更新的逻辑脱离了 <code>Statefulset</code> 的倒序更新。ES Operator 将需要部署的<code>Statefulset</code>更新策略设置为<code>OnDelete</code> 策略，然后自定义了一套 节点更新 策略，这套更新策略简化为:</p>
-<img src="/2021/08/12/%E7%9C%8B-Elasticsearch-Operator-%E6%9C%89%E6%84%9F/operator_update.png" class="" title="This is an operator_update.png">
-
-<p>ES Operator 自定义了一套 Pod 预选机制，预选机制是可扩展的，当前已有多个预选规则，我总结了一下。</p>
-<p>预选规则：</p>
-<ol>
-<li>不得重启大于 MaxUnAvailable 的节点数。</li>
-<li>只有当集群是 green 或者 yellow 的时候，才可以重启节点。</li>
-<li>跳过正在重启的Pod。</li>
-<li>在集群是 yellow 状态的时候，如果重启这个点，必须满足 shard 不会出现无 started 状态分片的情况。</li>
-<li>一次只重启一个 master。</li>
-<li>如果 data 节点没有更新完，不会更新 master 节点。</li>
-<li>不会同时更新两个Pod 包含相同的 shard。  </li>
-</ol>
-<p>ES Operator 在更新 <code>Pod</code> 之前，会经过一系列的验证才会去操作集群，我觉得更加稳定。举个例子，[0,1,2] 三个 data 节点，如果 0 节点损坏宕机了，这个时候Operator 更新集群，如果按照Statefulset 的倒序策略，需要先重启 2 号节点，这个时候会让集群陷入更糟糕的场景。我们应该先重启 0 号节点，让它先恢复。所以 ES Operator 虽然脱离于<code>Statefulset</code> 重新写了一套更新策略，但是这套机制更灵活，让应用更稳定。</p>
-<p>我画了一张更详细的流程图，描述 ES Operator 的滚动更新逻辑。</p>
-<img src="/2021/08/12/%E7%9C%8B-Elasticsearch-Operator-%E6%9C%89%E6%84%9F/es_operator_detail.png" class="" title="This is an es_operator_detail.png">
-
-<h2 id="TiDB-Operator-滚动更新"><a href="#TiDB-Operator-滚动更新" class="headerlink" title="TiDB Operator 滚动更新"></a>TiDB Operator 滚动更新</h2><p>TiDB Operator 采用 Statefulset Partition 的方式滚动更新，这种方式可以控制节点依次更新，但是必须按照倒序的方式，在极端情况下，由于中间节点的损坏，倒序更新的方式会让集群陷入更加糟糕的地步。TiDB Operator  更新集群的时候，没有考虑到集群层面的可用性，只是对当前更新节点进行驱逐 region。这一点我们可以从TiDB Operator 更新 TiKV 的一段核心代码看出来。</p>
-<p>代码如下:</p>
-<img src="/2021/08/12/%E7%9C%8B-Elasticsearch-Operator-%E6%9C%89%E6%84%9F/tikv_code.png" class="" title="This is an tikv_code.png">
-
-<p>画个图描述下依次更新的过程：</p>
-<img src="/2021/08/12/%E7%9C%8B-Elasticsearch-Operator-%E6%9C%89%E6%84%9F/tikv.png" class="" title="This is an tikv.png">
-
-<p>基于 TiDB Operator 当前的实现，我也提出来了自定义一套更新策略，增强在发布过程中的稳定性。参考 issue <a href="https://github.com/pingcap/tidb-operator/issues/4130" target="_blank" rel="noopener">4130</a>。</p>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>从 ES Operator 的实现可以看出，有状态存储用<code>Statefulset</code>还是有很多问题点，所以大家会对它做很多增强，比如 AdvanceStatefulset。但是我觉得或许我们需要一款新的基于 Pod 重新组装的CRD，他需要更加灵活可扩展，来应对 TiDB ,ES 等复杂类型的组件。</p>
-
+        
     </div>
 
     
@@ -243,12 +196,6 @@
     
 
       <footer class="post-footer">
-          <div class="post-tags">
-              <a href="/tags/elasticsearch/" rel="tag"># elasticsearch</a>
-              <a href="/tags/es/" rel="tag"># es</a>
-              <a href="/tags/operator/" rel="tag"># operator</a>
-              <a href="/tags/%E4%BA%91%E5%8E%9F%E7%94%9F/" rel="tag"># 云原生</a>
-          </div>
 
         
 
@@ -256,13 +203,10 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2020/06/04/%E5%8F%8C%E6%95%B0%E7%BB%84%E5%89%8D%E7%BC%80%E6%A0%91/" rel="prev" title="双数组前缀树">
-      <i class="fa fa-chevron-left"></i> 双数组前缀树
+    <a href="/2022/11/09/nlp-bert%E5%AD%A6%E4%B9%A0/" rel="prev" title="nlp-bert学习">
+      <i class="fa fa-chevron-left"></i> nlp-bert学习
     </a></div>
-      <div class="post-nav-item">
-    <a href="/2022/04/19/LevelDB%20RocksDB%20Boltdb%20Compare/" rel="next" title="LevelDB RocksDB Boltdb Compare">
-      LevelDB RocksDB Boltdb Compare <i class="fa fa-chevron-right"></i>
-    </a></div>
+      <div class="post-nav-item"></div>
     </div>
       </footer>
     
@@ -321,7 +265,6 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#引言"><span class="nav-number">1.</span> <span class="nav-text">引言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ES-Operator-滚动更新"><span class="nav-number">2.</span> <span class="nav-text">ES Operator 滚动更新</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#TiDB-Operator-滚动更新"><span class="nav-number">3.</span> <span class="nav-text">TiDB Operator 滚动更新</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">4.</span> <span class="nav-text">总结</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
