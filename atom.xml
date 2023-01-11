@@ -6,7 +6,7 @@
   <link href="http://mikechengwei.github.io/atom.xml" rel="self"/>
   
   <link href="http://mikechengwei.github.io/"/>
-  <updated>2023-01-06T15:45:43.342Z</updated>
+  <updated>2023-01-05T15:56:55.131Z</updated>
   <id>http://mikechengwei.github.io/</id>
   
   <author>
@@ -15,19 +15,6 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
-  
-  <entry>
-    <title>学习</title>
-    <link href="http://mikechengwei.github.io/2023/01/06/%E5%AD%A6%E4%B9%A0/"/>
-    <id>http://mikechengwei.github.io/2023/01/06/%E5%AD%A6%E4%B9%A0/</id>
-    <published>2023-01-06T15:45:43.000Z</published>
-    <updated>2023-01-06T15:45:43.342Z</updated>
-    
-    
-    
-    
-    
-  </entry>
   
   <entry>
     <title>nlp-bert学习</title>
