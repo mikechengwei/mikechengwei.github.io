@@ -20,16 +20,18 @@
     var CONFIG = {"hostname":"mikechengwei.github.io","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="I have a girl">
-<meta property="og:type" content="website">
-<meta property="og:title" content="mikechengwei&#39;s Blog">
-<meta property="og:url" content="http://mikechengwei.github.io/archives/2020/index.html">
+  <meta name="description" content="引言OpenTracing 是分布式调用链标准，用于解决不同的分布式追踪系统API不兼容的问题。 OpenTracing 概念Trace: 一个完整的请求链路  整条链路会用一个唯一标识TraceId来标识。  Span: 一次调用过程  一次rpc调用，HTTP请求就是一个Span.  SpanContext: Trace的全局上下文信息，会包含TraceId  包含整个链路的调用时间，耗时等信">
+<meta property="og:type" content="article">
+<meta property="og:title" content="apm-trace学习">
+<meta property="og:url" content="http://mikechengwei.github.io/2023/01/18/apm-trace%E5%AD%A6%E4%B9%A0/index.html">
 <meta property="og:site_name" content="mikechengwei&#39;s Blog">
-<meta property="og:description" content="I have a girl">
+<meta property="og:description" content="引言OpenTracing 是分布式调用链标准，用于解决不同的分布式追踪系统API不兼容的问题。 OpenTracing 概念Trace: 一个完整的请求链路  整条链路会用一个唯一标识TraceId来标识。  Span: 一次调用过程  一次rpc调用，HTTP请求就是一个Span.  SpanContext: Trace的全局上下文信息，会包含TraceId  包含整个链路的调用时间，耗时等信">
+<meta property="article:published_time" content="2023-01-18T11:36:05.000Z">
+<meta property="article:modified_time" content="2023-01-18T15:44:51.451Z">
 <meta property="article:author" content="mikechengwei">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="http://mikechengwei.github.io/archives/2020/">
+<link rel="canonical" href="http://mikechengwei.github.io/2023/01/18/apm-trace%E5%AD%A6%E4%B9%A0/">
 
 
 <script id="page-configurations">
@@ -37,12 +39,12 @@
   CONFIG.page = {
     sidebar: "",
     isHome : false,
-    isPost : false,
+    isPost : true,
     lang   : 'zh-Hans'
   };
 </script>
 
-  <title>Archive | mikechengwei's Blog</title>
+  <title>apm-trace学习 | mikechengwei's Blog</title>
   
 
 
@@ -142,90 +144,89 @@
         <div class="content-wrap">
           
 
-          <div class="content archive">
+          <div class="content post posts-expand">
             
 
+    
   
   
-  
-  <div class="post-block">
-    <div class="posts-collapse">
-      <div class="collection-title">
-        <span class="collection-header">Um..! 12 posts in total. Keep on posting.</span>
-      </div>
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://mikechengwei.github.io/2023/01/18/apm-trace%E5%AD%A6%E4%B9%A0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="mikechengwei">
+      <meta itemprop="description" content="I have a girl">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="mikechengwei's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          apm-trace学习
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2023-01-18 19:36:05 / Modified: 23:44:51" itemprop="dateCreated datePublished" datetime="2023-01-18T19:36:05+08:00">2023-01-18</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
 
       
-    <div class="collection-year">
-      <span class="collection-header">2020</span>
+        <h1 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h1><p>OpenTracing 是分布式调用链标准，用于解决不同的分布式追踪系统API不兼容的问题。</p>
+<h1 id="OpenTracing-概念"><a href="#OpenTracing-概念" class="headerlink" title="OpenTracing 概念"></a>OpenTracing 概念</h1><p>Trace: 一个完整的请求链路</p>
+<ul>
+<li>整条链路会用一个唯一标识TraceId来标识。</li>
+</ul>
+<p>Span: 一次调用过程</p>
+<ul>
+<li>一次rpc调用，HTTP请求就是一个Span.</li>
+</ul>
+<p>SpanContext: Trace的全局上下文信息，会包含TraceId</p>
+<ul>
+<li>包含整个链路的调用时间，耗时等信息。</li>
+</ul>
+<h1 id="SkyWalking-学习"><a href="#SkyWalking-学习" class="headerlink" title="SkyWalking 学习"></a>SkyWalking 学习</h1>
     </div>
 
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
+    
+    
+    
 
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2020-06-04T00:18:33+08:00"
-              content="2020-06-04">
-          06-04
-        </time>
-      </div>
+      <footer class="post-footer">
 
-      <div class="post-title">
-          <a class="post-title-link" href="/2020/06/04/%E5%8F%8C%E6%95%B0%E7%BB%84%E5%89%8D%E7%BC%80%E6%A0%91/" itemprop="url">
-            <span itemprop="name">双数组前缀树</span>
-          </a>
-      </div>
-
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2020-06-03T23:27:40+08:00"
-              content="2020-06-03">
-          06-03
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2020/06/03/cgroup%E5%8E%9F%E7%90%86/" itemprop="url">
-            <span itemprop="name">Linux Control Groups V1 和 V2 原理和区别</span>
-          </a>
-      </div>
-
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2020-06-03T23:20:47+08:00"
-              content="2020-06-03">
-          06-03
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2020/06/03/hello-world/" itemprop="url">
-            <span itemprop="name">Hello World</span>
-          </a>
-      </div>
-
-    </header>
-  </article>
+        
 
 
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2023/01/14/etcd-raft-%E6%BA%90%E7%A0%81%E5%AD%A6%E4%B9%A0/" rel="prev" title="etcd-raft-源码学习">
+      <i class="fa fa-chevron-left"></i> etcd-raft-源码学习
+    </a></div>
+      <div class="post-nav-item"></div>
     </div>
-  </div>
+      </footer>
+    
+  </article>
   
   
-  
-
   
 
 
@@ -278,6 +279,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#引言"><span class="nav-number">1.</span> <span class="nav-text">引言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#OpenTracing-概念"><span class="nav-number">2.</span> <span class="nav-text">OpenTracing 概念</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#SkyWalking-学习"><span class="nav-number">3.</span> <span class="nav-text">SkyWalking 学习</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 

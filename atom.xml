@@ -6,7 +6,7 @@
   <link href="http://mikechengwei.github.io/atom.xml" rel="self"/>
   
   <link href="http://mikechengwei.github.io/"/>
-  <updated>2023-01-14T15:31:14.413Z</updated>
+  <updated>2023-01-18T15:44:51.451Z</updated>
   <id>http://mikechengwei.github.io/</id>
   
   <author>
@@ -15,6 +15,28 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>apm-trace学习</title>
+    <link href="http://mikechengwei.github.io/2023/01/18/apm-trace%E5%AD%A6%E4%B9%A0/"/>
+    <id>http://mikechengwei.github.io/2023/01/18/apm-trace%E5%AD%A6%E4%B9%A0/</id>
+    <published>2023-01-18T11:36:05.000Z</published>
+    <updated>2023-01-18T15:44:51.451Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h1 id=&quot;引言&quot;&gt;&lt;a href=&quot;#引言&quot; class=&quot;headerlink&quot; title=&quot;引言&quot;&gt;&lt;/a&gt;引言&lt;/h1&gt;&lt;p&gt;OpenTracing 是分布式调用链标准，用于解决不同的分布式追踪系统API不兼容的问题。&lt;/p&gt;
+&lt;h1</summary>
+        
+      
+    
+    
+    
+    
+  </entry>
   
   <entry>
     <title>etcd-raft-源码学习</title>
