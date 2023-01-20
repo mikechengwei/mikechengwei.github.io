@@ -6,7 +6,7 @@
   <link href="http://mikechengwei.github.io/atom.xml" rel="self"/>
   
   <link href="http://mikechengwei.github.io/"/>
-  <updated>2023-01-18T15:44:51.451Z</updated>
+  <updated>2023-01-20T08:44:05.234Z</updated>
   <id>http://mikechengwei.github.io/</id>
   
   <author>
@@ -15,6 +15,27 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>eBPF-学习</title>
+    <link href="http://mikechengwei.github.io/2023/01/20/ebpf-%E5%AD%A6%E4%B9%A0/"/>
+    <id>http://mikechengwei.github.io/2023/01/20/ebpf-%E5%AD%A6%E4%B9%A0/</id>
+    <published>2023-01-20T08:32:56.000Z</published>
+    <updated>2023-01-20T08:44:05.234Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h1 id=&quot;引言&quot;&gt;&lt;a href=&quot;#引言&quot; class=&quot;headerlink&quot; title=&quot;引言&quot;&gt;&lt;/a&gt;引言&lt;/h1&gt;&lt;p&gt;eBPF 是 Linux 内核中一个非常灵活与高效的类虚拟机，能够在许多内核hook点安全地执行字节码。eBPF</summary>
+        
+      
+    
+    
+    
+    
+  </entry>
   
   <entry>
     <title>apm-trace学习</title>
