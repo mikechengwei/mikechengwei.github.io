@@ -179,7 +179,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2023-02-04 23:57:47" itemprop="dateModified" datetime="2023-02-04T23:57:47+08:00">2023-02-04</time>
+                <time title="Modified: 2023-02-05 23:55:19" itemprop="dateModified" datetime="2023-02-05T23:55:19+08:00">2023-02-05</time>
               </span>
 
           
@@ -195,7 +195,35 @@
       
           <h1 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h1><p>eBPF 是 Linux 内核中一个非常灵活与高效的类虚拟机，能够在许多内核hook点安全地执行字节码。eBPF 在将程序附加到内核发生的事件中，每当事件发生，都将触发eBPF程序运行。</p>
 <h2 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h2><p>eBPF程序是事件驱动的，当内核或应用程序通过某个钩子点（hook point）时触发执行。预定义的钩子包括：系统调用、函数进入/退出、内核跟踪点、网络事件等。</p>
-<h2 id="系统命令"><a href="#系统命令" class="headerlink" title="系统命令"></a>系统命令</h2>
+<h2 id="cilium-ebpf-使用"><a href="#cilium-ebpf-使用" class="headerlink" title="cilium ebpf 使用"></a>cilium ebpf 使用</h2><p>项目地址: <a href="https://github.com/cilium/ebpf" target="_blank" rel="noopener">https://github.com/cilium/ebpf</a></p>
+<pre><code>// 加载提前编译的c语言
+objs := bpfObjects{}
+if err := loadBpfObjects(&amp;objs, nil); err != nil {
+    log.Fatalf(&quot;loading objects: %v&quot;, err)
+}</code></pre><p>追踪函数</p>
+<ul>
+<li>kprobes 内核动态探针<ul>
+<li>分别是pre_handler、post_handler和fault_handler</li>
+</ul>
+</li>
+<li>kretprobe<ul>
+<li>用于探测函数的返回值以及计算函数执行的耗时。</li>
+</ul>
+</li>
+<li>USTD 用户静态探针<ul>
+<li>用户态预定义静态跟踪，它是用户态下的tracepoints</li>
+</ul>
+</li>
+<li>uprobes 用户动态探针<ul>
+<li>在用户态和内核态的kprobe对应，能实现在函数入口、特定偏移处以及函数返回处进行插桩。</li>
+</ul>
+</li>
+<li>tracepoints 内核静态探针    <ul>
+<li>是内核开发人员在内核代码中的埋点，是开发者在内核源代码中散落的一些hook，开发者可以依托这些hook实现相应的追踪代码插入。通常比较稳定：能够保证不同内核版本间的兼容性</li>
+</ul>
+</li>
+</ul>
+
       
     </div>
 
