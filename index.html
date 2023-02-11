@@ -148,6 +148,64 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://mikechengwei.github.io/2023/02/11/%E5%88%86%E5%B8%83%E5%BC%8F%E6%95%B0%E6%8D%AE%E5%BA%93%E4%BA%8B%E5%8A%A1%E5%AE%9E%E7%8E%B0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="mikechengwei">
+      <meta itemprop="description" content="I have a girl">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="mikechengwei's Blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2023/02/11/%E5%88%86%E5%B8%83%E5%BC%8F%E6%95%B0%E6%8D%AE%E5%BA%93%E4%BA%8B%E5%8A%A1%E5%AE%9E%E7%8E%B0/" class="post-title-link" itemprop="url">分布式数据库事务实现</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2023-02-11 23:48:10 / Modified: 23:51:43" itemprop="dateCreated datePublished" datetime="2023-02-11T23:48:10+08:00">2023-02-11</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="2PC-协议"><a href="#2PC-协议" class="headerlink" title="2PC 协议"></a>2PC 协议</h1>
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-Hans">
     <link itemprop="mainEntityOfPage" href="http://mikechengwei.github.io/2023/01/20/ebpf-%E5%AD%A6%E4%B9%A0/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1024,101 +1082,6 @@ if err := loadBpfObjects(&amp;objs, nil); err != nil {
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-Hans">
-    <link itemprop="mainEntityOfPage" href="http://mikechengwei.github.io/2021/08/12/%E7%9C%8B-Elasticsearch-Operator-%E6%9C%89%E6%84%9F/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="mikechengwei">
-      <meta itemprop="description" content="I have a girl">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="mikechengwei's Blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/08/12/%E7%9C%8B-Elasticsearch-Operator-%E6%9C%89%E6%84%9F/" class="post-title-link" itemprop="url">看Elasticsearch-Operator-有感</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-              
-
-              <time title="Created: 2021-08-12 01:18:31 / Modified: 01:50:11" itemprop="dateCreated datePublished" datetime="2021-08-12T01:18:31+08:00">2021-08-12</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E4%BA%91%E5%8E%9F%E7%94%9F/" itemprop="url" rel="index"><span itemprop="name">云原生</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h2 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h2><p>最近仔细看了下 Elasticsearch Operator，感觉它的设计有点别出心裁，在集群更新方面，比我所知道的 TiDB Operator 和 Prometheus Operator 做的更好。所以在这里做一个 Elasticsearch Operator 和 TiDB Operator 的对比。</p>
-<h2 id="ES-Operator-滚动更新"><a href="#ES-Operator-滚动更新" class="headerlink" title="ES Operator 滚动更新"></a>ES Operator 滚动更新</h2><p>ES 作为搜索存储组件，也是一种有状态应用。ES Operator 在19年的有一个 issue <a href="https://github.com/elastic/cloud-on-k8s/issues/1173" target="_blank" rel="noopener">#1173 </a> ，确定了基于<code>Statefulset</code> 做 ES 的部署。最近阅读完 ES Operator的代码，我发现它虽然基于<code>Statefulset</code>做集群管理，但是节点更新的逻辑脱离了 <code>Statefulset</code> 的倒序更新。ES Operator 将需要部署的<code>Statefulset</code>更新策略设置为<code>OnDelete</code> 策略，然后自定义了一套 节点更新 策略，这套更新策略简化为:</p>
-<img src="/2021/08/12/%E7%9C%8B-Elasticsearch-Operator-%E6%9C%89%E6%84%9F/operator_update.png" class="" title="This is an operator_update.png">
-
-<p>ES Operator 自定义了一套 Pod 预选机制，预选机制是可扩展的，当前已有多个预选规则，我总结了一下。</p>
-<p>预选规则：</p>
-<ol>
-<li>不得重启大于 MaxUnAvailable 的节点数。</li>
-<li>只有当集群是 green 或者 yellow 的时候，才可以重启节点。</li>
-<li>跳过正在重启的Pod。</li>
-<li>在集群是 yellow 状态的时候，如果重启这个点，必须满足 shard 不会出现无 started 状态分片的情况。</li>
-<li>一次只重启一个 master。</li>
-<li>如果 data 节点没有更新完，不会更新 master 节点。</li>
-<li>不会同时更新两个Pod 包含相同的 shard。  </li>
-</ol>
-<p>ES Operator 在更新 <code>Pod</code> 之前，会经过一系列的验证才会去操作集群，我觉得更加稳定。举个例子，[0,1,2] 三个 data 节点，如果 0 节点损坏宕机了，这个时候Operator 更新集群，如果按照Statefulset 的倒序策略，需要先重启 2 号节点，这个时候会让集群陷入更糟糕的场景。我们应该先重启 0 号节点，让它先恢复。所以 ES Operator 虽然脱离于<code>Statefulset</code> 重新写了一套更新策略，但是这套机制更灵活，让应用更稳定。</p>
-<p>我画了一张更详细的流程图，描述 ES Operator 的滚动更新逻辑。</p>
-<img src="/2021/08/12/%E7%9C%8B-Elasticsearch-Operator-%E6%9C%89%E6%84%9F/es_operator_detail.png" class="" title="This is an es_operator_detail.png">
-
-<h2 id="TiDB-Operator-滚动更新"><a href="#TiDB-Operator-滚动更新" class="headerlink" title="TiDB Operator 滚动更新"></a>TiDB Operator 滚动更新</h2><p>TiDB Operator 采用 Statefulset Partition 的方式滚动更新，这种方式可以控制节点依次更新，但是必须按照倒序的方式，在极端情况下，由于中间节点的损坏，倒序更新的方式会让集群陷入更加糟糕的地步。TiDB Operator  更新集群的时候，没有考虑到集群层面的可用性，只是对当前更新节点进行驱逐 region。这一点我们可以从TiDB Operator 更新 TiKV 的一段核心代码看出来。</p>
-<p>代码如下:</p>
-<img src="/2021/08/12/%E7%9C%8B-Elasticsearch-Operator-%E6%9C%89%E6%84%9F/tikv_code.png" class="" title="This is an tikv_code.png">
-
-<p>画个图描述下依次更新的过程：</p>
-<img src="/2021/08/12/%E7%9C%8B-Elasticsearch-Operator-%E6%9C%89%E6%84%9F/tikv.png" class="" title="This is an tikv.png">
-
-<p>基于 TiDB Operator 当前的实现，我也提出来了自定义一套更新策略，增强在发布过程中的稳定性。参考 issue <a href="https://github.com/pingcap/tidb-operator/issues/4130" target="_blank" rel="noopener">4130</a>。</p>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>从 ES Operator 的实现可以看出，有状态存储用<code>Statefulset</code>还是有很多问题点，所以大家会对它做很多增强，比如 AdvanceStatefulset。但是我觉得或许我们需要一款新的基于 Pod 重新组装的CRD，他需要更加灵活可扩展，来应对 TiDB ,ES 等复杂类型的组件。</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1196,7 +1159,7 @@ if err := loadBpfObjects(&amp;objs, nil); err != nil {
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">13</span>
+          <span class="site-state-item-count">14</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
